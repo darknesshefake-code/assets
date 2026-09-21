@@ -1,0 +1,99 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(120deg, #ff007f, #7f00ff, #00f0ff, #ff007f);
+    background-size: 400% 400%;
+    animation: neonGradient 12s ease infinite;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #e0e0e0;
+}
+
+@keyframes neonGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.card {
+    width: 100%;
+    max-width: 600px;
+    background: rgba(15, 15, 25, 0.85);
+    border: 2px solid rgba(255, 0, 127, 0.4);
+    border-radius: 24px;
+    box-shadow: 0 0 40px rgba(255, 0, 127, 0.3), inset 0 0 20px rgba(0, 240, 255, 0.1);
+    padding: 40px 30px;
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+h2 {
+    color: #00f0ff;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+    text-align: center;
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #e0e0e0;
+}
+
+/* Стили для картинок из папки photos */
+.photo-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.photo-container img {
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 16px;
+    border: 2px solid rgba(255, 0, 127, 0.5);
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+}
+
+/* Навигация между страницами */
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 25px;
+    padding-top: 20px;
+}
+
+.nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 15px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.nav-btn:hover {
+    background-color: rgba(255, 0, 127, 0.3);
+    border-color: #ff007f;
+}
+
+.page-counter {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+}
