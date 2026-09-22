@@ -179,7 +179,7 @@
     /* ============================================================
        Статистика переписки (данные приходят с сервиса stats_service)
        ============================================================ */
-    var STATS_API_DEFAULT = 'https://love-stats-api.onrender.com';   // ← адрес своего сервиса статистики
+    var STATS_API_DEFAULT = 'https://i-love-you-anya.onrender.com';   // ← адрес своего сервиса статистики
 
     function apiBase() {
         var fromQuery = new URLSearchParams(location.search).get('api');
