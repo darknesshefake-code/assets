@@ -1,0 +1,54 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Создаёт сразу два сервиса:
+#   1) i-love-you-anya-site — сам сайт (статика, бесплатно, никогда не спит)
+#   2) i-love-you-anya — считает сообщения в Telegram и отдаёт цифры сайту (бесплатный web-сервис)
+#
+# Использование: Render → New + → Blueprint → выбрать этот репозиторий → Apply.
+# Секретные значения (API_ID, API_HASH, TG_SESSION) Render спросит в панели — в файле их нет.
+
+services:
+  # ── 1. Сайт ──────────────────────────────────────────────
+  - type: web
+    name: i-love-you-anya-site
+    runtime: static
+    branch: main
+    staticPublishPath: ./love_site
+    previews:
+      generation: automatic
+    # когда появится свой домен — впиши сюда, сертификат Render выпустит сам:
+    # domains:
+    #   - lyubov.pp.ua
+
+  # ── 2. Статистика переписки ──────────────────────────────
+  - type: web
+    name: i-love-you-anya
+    runtime: python
+    branch: main
+    rootDir: stats_service
+    plan: free                     # бесплатный план: спит после 15 мин простоя
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.4"
+      - key: API_ID                  # с my.telegram.org — Render спросит значение
+        sync: false
+      - key: API_HASH
+        sync: false
+      - key: TG_SESSION              # строка из make_session.py (или войти через /login и вставить позже)
+        sync: false
+      - key: LOGIN_SECRET           # слово для страницы входа /login?secret=... — Render спросит значение
+        sync: false
+      - key: TARGET_PHONE
+        value: "+380669543625"
+      - key: TARGET_NAME             # как подписывать её на сайте, необязательно
+        sync: false
+      - key: MY_NAME
+        value: "Я"
+      - key: SYNC_INTERVAL
+        value: "60"
+      - key: ON_DEMAND_COOLDOWN
+        value: "25"
+      - key: ALLOWED_ORIGINS
+        value: "*"                   # можно ограничить адресом сайта

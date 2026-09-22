@@ -1,0 +1,40 @@
+name: Deploy love_site to GitHub Pages
+
+# Публикует папку love_site на GitHub Pages при каждом пуше в main.
+# Включить: Settings → Pages → Source: GitHub Actions.
+# Адрес сайта: https://<логин>.github.io/<репозиторий>/  (плюс свой домен при желании)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site (папка love_site)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: love_site
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
