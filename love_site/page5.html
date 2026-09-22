@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07050d">
+<title>Наша переписка в цифрах ❤️</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="bg" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+
+<!-- шаги -->
+<nav class="steps" aria-label="Разделы">
+    <a class="step is-done" href="index.html"><b>1</b><span>Подарки</span></a>
+    <a class="step is-done" href="page2.html"><b>2</b><span>Укусы</span></a>
+    <a class="step is-done" href="page3.html"><b>3</b><span>Глаза</span></a>
+    <a class="step is-active" href="page5.html" aria-current="page"><b>4</b><span>Статистика</span></a>
+    <a class="step" href="page6.html"><b>5</b><span>Кнопка</span></a>
+    <a class="step" href="page4.html"><b>6</b><span>Письмо</span></a>
+</nav>
+
+<main class="card">
+    <span class="kicker">Часть 4 · Статистика</span>
+
+    <h1>Наша переписка <em>в цифрах</em></h1>
+
+    <p class="lead">Считаю каждое сообщение — своё и твоё — в нашем с тобой диалоге. Цифры обновляются при каждом заходе на страницу, так что цифра здесь всегда настоящая. И да, я знаю, кто из нас пишет больше 😌</p>
+
+    <div class="board" id="stats" data-state="loading">
+        <div class="board__head">
+            <span class="board__who" id="statsWho">Мы с тобой 💬</span>
+            <span class="board__when" id="statsUpdated">считаю…</span>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat stat--me">
+                <span class="stat__label">Я отправил</span>
+                <span class="stat__value" id="statMe"><span class="skeleton"></span></span>
+                <span class="stat__sub" id="statMeSub">— % сообщений</span>
+                <div class="bar"><i id="barMe"></i></div>
+            </div>
+
+            <div class="stat stat--her">
+                <span class="stat__label">Ты отправила</span>
+                <span class="stat__value" id="statOther"><span class="skeleton"></span></span>
+                <span class="stat__sub" id="statOtherSub">— % сообщений</span>
+                <div class="bar"><i id="barOther"></i></div>
+            </div>
+        </div>
+
+        <div class="board__foot">
+            <span class="verdict" id="statsVerdict">смотрю, кто активнее…</span>
+            <span class="hint" id="statsHint">Всего <b id="statTotal">—</b> сообщений · <span id="statsDays"></span></span>
+        </div>
+
+        <div class="board__foot">
+            <button class="btn" type="button" id="statsRefresh">Обновить ↻</button>
+            <span class="hint">Если цифры не появились сразу — сервер просыпается, это до минуты. Он бесплатный и спит, когда никто не заходит.</span>
+        </div>
+    </div>
+
+    <details class="tech">
+        <summary>Как это работает?</summary>
+        <p>Отдельный маленький сервис на Python (FastAPI + Telethon) авторизован в моём Telegram, читает только наш диалог и раз в минуту пересчитывает новые сообщения. Страница забирает готовые цифры у сервиса и рисует их здесь.</p>
+        <ul>
+            <li>считаются только сообщения из нашего чата — с телефона <code>+380669543625</code>;</li>
+            <li>системные сообщения (сервисные) не считаются, сообщения с фото и видео — считаются;</li>
+            <li>нажатие <code>инфо</code> в этом чате в Telegram присылает ту же статистику прямо в чат;</li>
+            <li>адрес сервиса задаётся одной строкой <code>STATS_API_DEFAULT</code> в файле <code>script.js</code>;</li>
+            <li>код сервиса лежит в репозитории в папке <code>stats_service/</code>.</li>
+        </ul>
+    </details>
+
+    <nav class="nav" aria-label="Переход между страницами">
+        <a class="btn btn--back" href="page3.html"><i>←</i> Назад</a>
+        <span class="counter">4 / 6</span>
+        <a class="btn btn--primary" href="page6.html">Дальше: кнопка <i>→</i></a>
+    </nav>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

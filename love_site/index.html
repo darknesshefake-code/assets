@@ -1,34 +1,79 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Для тебя ❤️</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07050d">
+<title>Я никогда не забуду твои подарки ❤️</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <div class="card">
-        <div class="content">
-            <h2>Навсегда вместе ✨</h2>
-            
-            <p>Я обещаю тебе, что никогда не предам и не отпущу. Моя любовь к тебе это не мимолётное чувство, это выбор всей моей души и сердца. Я выбрал тебя раз и навсегда, и буду любить тебя всегда - сегодня, завтра и до последнего своего дыхания.</p>
-            
-            <!-- Вторая картинка из папки photos -->
-            <div class="photo-container">
-                <img src="photos/photo2.jpg" alt="Еще одно фото">
-            </div>
+<div class="bg" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 
-            <p>Ты - мой мир. Ты - моё всё. И я бесконечно благодарен судьбе за то, что она подарила мне тебя.</p>
-            
-            <p>Знай, что моё "я тебя люблю" - это не просто слова. Это обещание. Обещание быть рядом, ценить, беречь и всегда выбирать тебя. Ты самое дорогое, что есть у меня в жизни.❤️❤️❤️</p>
-        </div>
+<!-- шаги -->
+<nav class="steps" aria-label="Разделы">
+    <a class="step is-active" href="index.html" aria-current="page"><b>1</b><span>Подарки</span></a>
+    <a class="step" href="page2.html"><b>2</b><span>Укусы</span></a>
+    <a class="step" href="page3.html"><b>3</b><span>Глаза</span></a>
+    <a class="step" href="page5.html"><b>4</b><span>Статистика</span></a>
+    <a class="step" href="page6.html"><b>5</b><span>Кнопка</span></a>
+    <a class="step" href="page4.html"><b>6</b><span>Письмо</span></a>
+</nav>
 
-        <div class="navigation">
-            <a href="index.html" class="nav-btn">← Назад</a>
-            <span class="page-counter">2 из 2</span>
-        </div>
+<main class="card">
+    <span class="kicker">Часть 1 · Подарки</span>
+
+    <h1>Я никогда не забуду <em>твои подарки</em></h1>
+
+    <p class="lead">Каждый из них — не просто вещь. Это знак: ты слышишь меня, ты помнишь мелочи, ты выбирала это для меня. Я помню всё — и буду помнить.</p>
+
+    <div class="route" aria-label="Что дальше на сайте">
+        <a href="page2.html"><b>2</b> укусы</a>
+        <a href="page3.html"><b>3</b> глаза</a>
+        <a href="page5.html"><b>4</b> статистика переписки</a>
+        <a href="page6.html"><b>5</b> кнопка от грусти</a>
+        <a href="page4.html"><b>6</b> письмо</a>
     </div>
 
+    <div class="gallery">
+        <figure class="shot" tabindex="0" role="button" aria-label="Открыть фото 1">
+            <img src="img/gift_01.jpg" data-full="img/large/gift_01.jpg" alt="Твой подарок — фото 1" loading="lazy">
+            <figcaption class="num">01</figcaption>
+        </figure>
+        <figure class="shot" tabindex="0" role="button" aria-label="Открыть фото 2">
+            <img src="img/gift_02.jpg" data-full="img/large/gift_02.jpg" alt="Твой подарок — фото 2" loading="lazy">
+            <figcaption class="num">02</figcaption>
+        </figure>
+        <figure class="shot" tabindex="0" role="button" aria-label="Открыть фото 3">
+            <img src="img/gift_03.jpg" data-full="img/large/gift_03.jpg" alt="Твой подарок — фото 3" loading="lazy">
+            <figcaption class="num">03</figcaption>
+        </figure>
+        <figure class="shot" tabindex="0" role="button" aria-label="Открыть фото 4">
+            <img src="img/gift_04.jpg" data-full="img/large/gift_04.jpg" alt="Твой подарок — фото 4" loading="lazy">
+            <figcaption class="num">04</figcaption>
+        </figure>
+        <figure class="shot" tabindex="0" role="button" aria-label="Открыть фото 5">
+            <img src="img/gift_05.jpg" data-full="img/large/gift_05.jpg" alt="Твой подарок — фото 5" loading="lazy">
+            <figcaption class="num">05</figcaption>
+        </figure>
+        <figure class="shot" tabindex="0" role="button" aria-label="Открыть фото 6">
+            <img src="img/gift_06.jpg" data-full="img/large/gift_06.jpg" alt="Твой подарок — фото 6" loading="lazy">
+            <figcaption class="num">06</figcaption>
+        </figure>
+        <figure class="shot" tabindex="0" role="button" aria-label="Открыть фото 7">
+            <img src="img/gift_07.jpg" data-full="img/large/gift_07.jpg" alt="Твой подарок — фото 7" loading="lazy">
+            <figcaption class="num">07</figcaption>
+        </figure>
+    </div>
+
+    <nav class="nav" aria-label="Переход между страницами">
+        <span class="counter">1 / 6</span>
+        <a class="btn btn--primary" href="page2.html">Дальше: укусы <i>→</i></a>
+    </nav>
+</main>
+
+<script src="script.js"></script>
 </body>
 </html>

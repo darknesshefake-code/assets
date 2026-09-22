@@ -1,0 +1,6 @@
+.env
+stats.db
+stats.db-wal
+stats.db-shm
+my_userbot_session.session
+__pycache__/
