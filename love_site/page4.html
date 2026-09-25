@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#07050d">
-<title>Письмо для тебя ❤️</title>
+<title>Письмо 1 — Для тебя ❤️</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -12,20 +12,33 @@
 
 <div class="bg" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 
-<!-- шаги -->
+<!-- шаги — 4 раздела -->
 <nav class="steps" aria-label="Разделы">
-    <a class="step is-done" href="index.html"><b>1</b><span>Подарки</span></a>
-    <a class="step is-done" href="page2.html"><b>2</b><span>Укусы</span></a>
-    <a class="step is-done" href="page3.html"><b>3</b><span>Глаза</span></a>
-    <a class="step is-done" href="page5.html"><b>4</b><span>Статистика</span></a>
-    <a class="step is-done" href="page6.html"><b>5</b><span>Кнопка</span></a>
-    <a class="step is-active" href="page4.html" aria-current="page"><b>6</b><span>Письмо</span></a>
+    <a class="step" href="kompromat.html"><b>1</b><span>Воспоминания</span></a>
+    <a class="step" href="page5.html"><b>2</b><span>Статистика</span></a>
+    <a class="step" href="page6.html"><b>3</b><span>Кнопка</span></a>
+    <a class="step is-active" href="page4.html" aria-current="page"><b>4</b><span>Письмо</span></a>
 </nav>
 
 <main class="card">
-    <span class="kicker">Часть 4 · Письмо</span>
+    <span class="kicker">4 · Письмо — 1 из 3</span>
 
     <h1>Всё, что я хочу тебе <em>сказать</em></h1>
+
+    <!--
+        ═══════════════════════════════════════════════════════════════
+        КАК МЕНЯТЬ ТЕКСТ ПИСЬМА — ИНСТРУКЦИЯ:
+        1) Ниже блок <div class="letter"> — каждая <p> это абзац.
+        2) Первый абзац автоматически с большой буквицей, не трогай.
+        3) Чтобы добавить новый абзац — скопируй <p>…</p> и вставь.
+        4) <p class="sign"> — подпись внизу (имя/дата). Меняй как хочешь.
+        5) Чтобы добавить фото в постскриптум — скопируй <figure class="shot">…</figure>
+           и поменяй src на свой файл в img/large/ или img/.
+        6) Чтобы добавить ещё страницу письма — скопируй этот файл page4.html
+           в page7.html / page8.html и поменяй текст. Не забудь поменять
+           ссылки «Назад/Дальше» внизу и счётчик «1 из 3» → «2 из 3».
+        ═══════════════════════════════════════════════════════════════
+    -->
 
     <div class="letter">
         <p>Я обещаю тебе, что <strong>никогда не предам и не отпущу</strong>. Моя любовь к тебе — это не мимолётное чувство. Это выбор всей моей души и сердца. Я выбрал тебя раз и навсегда, и буду любить тебя всегда: сегодня, завтра и до последнего своего дыхания.</p>
@@ -38,7 +51,7 @@
 
         <p class="sign">
             Навсегда твой.<br>Тот, кто выбрал тебя один раз и навсегда.
-            <small>Навсегда вместе ✨</small>
+            <small>Письмо 1 · Начало ✨</small>
         </p>
     </div>
 
@@ -57,14 +70,18 @@
         </div>
     </div>
 
-    <div class="sig-line">6 / 6 · финал ❤️</div>
+    <div class="edit-hint">
+        <b>Как добавить страницу:</b> скопируй <code>page4.html</code> → <code>page7.html</code>, поменяй заголовок, текст в <code>&lt;div class="letter"&gt;</code> и внизу кнопки <code>← Назад</code> / <code>Дальше →</code>. В <code>kicker</code> поменяй <code>1 из 3</code> на <code>2 из 3</code>. В <code>letter-dots</code> передвинь класс <code>is-active</code> на нужную точку.
+    </div>
 
-    <div class="divider">❤</div>
-
-    <nav class="nav nav--center" aria-label="Навигация">
-        <a class="btn btn--back" href="page6.html"><i>←</i> Назад</a>
-        <a class="btn" href="index.html">Пройти сначала ↺</a>
+    <!-- листалка писем -->
+    <nav class="letter-nav" aria-label="Листание писем">
+        <a class="btn btn--back" href="page6.html"><i>←</i> Кнопка</a>
+        <span class="counter">Письмо 1 / 3 <span class="letter-dots"><i class="is-active"></i><i></i><i></i></span></span>
+        <a class="btn btn--primary" href="page7.html">Дальше <i>→</i></a>
     </nav>
+
+    <div class="sig-line">листай → там ещё два письма ❤️</div>
 </main>
 
 <script src="script.js"></script>

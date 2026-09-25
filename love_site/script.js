@@ -186,7 +186,28 @@
         if (fromQuery) { try { localStorage.setItem('stats_api', fromQuery); } catch (e) {} }
         var saved = null;
         try { saved = localStorage.getItem('stats_api'); } catch (e) {}
-        return String(fromQuery || saved || window.STATS_API || STATS_API_DEFAULT).replace(/\/+$/, '');
+        var base = String(fromQuery || saved || window.STATS_API || STATS_API_DEFAULT).replace(/\/+$/, '');
+        // авто-подмена для превью в E2B (когда сайт открыт как 8000-xxx.e2b.app, а api на 8010-xxx)
+        if (!fromQuery && !saved && location.hostname.indexOf('e2b.app') !== -1 && base.indexOf('render.com') !== -1) {
+            try {
+                if (location.hostname.indexOf('8000-') === 0) {
+                    var cand = location.protocol + '//' + location.hostname.replace(/^8000-/, '8010-');
+                    // быстрый probe не делаем — просто берём как приоритетный кандидат, фетч сам упадёт если не туда и вернётся на render
+                    // но чтобы не ломать прод — оставим base как был, а fallback сделаем в fetchSeries
+                    // поэтому тут ничего не меняем, логика fallback внизу
+                }
+            } catch(e){}
+        }
+        return base;
+    }
+
+    function previewApiBase() {
+        try {
+            if (location.hostname.indexOf('e2b.app') !== -1 && location.hostname.indexOf('8000-') === 0) {
+                return (location.protocol + '//' + location.hostname.replace(/^8000-/, '8010-')).replace(/\/+$/, '');
+            }
+        } catch(e){}
+        return null;
     }
 
     function plural(n, one, few, many) {
@@ -314,9 +335,20 @@
                 if (ui.hint) ui.hint.textContent = 'Бесплатный сервер спит после 15 минут простоя и просыпается до минуты. Подожди немного — цифры появятся сами.';
             }, 4000);
 
-            fetch(base + '/api/stats', { signal: ctrl.signal, cache: 'no-store' })
-                .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            var previewBase = previewApiBase();
+            function tryStats(fetchBase){
+                return fetch(fetchBase + '/api/stats', { signal: ctrl.signal, cache: 'no-store' })
+                    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+            }
+            tryStats(base)
                 .then(function (d) { render(d, false); })
+                .catch(function (e) {
+                    if (e && e.name === 'AbortError') throw e;
+                    if (previewBase && previewBase !== base) {
+                        return tryStats(previewBase).then(function(d){ render(d, false); });
+                    }
+                    throw e;
+                })
                 .catch(function (e) {
                     if (e && e.name === 'AbortError') return;
                     fail('Цифры не пришли: ' + (e && e.message ? e.message : 'ошибка сети') + '.');
@@ -341,6 +373,569 @@
         document.addEventListener('visibilitychange', function () {
             if (document.visibilityState === 'visible') load();
         });
+    }
+
+    /* ============================================================
+       График просадок — динамика по дням
+       ============================================================ */
+    function talkDynamics() {
+        var section = document.getElementById('chartSection');
+        if (!section) return;
+
+        var canvas = document.getElementById('talkChart');
+        var tip = document.getElementById('chartTip');
+        var empty = document.getElementById('chartEmpty');
+        var statusEl = document.getElementById('chartStatus');
+        var heat = document.getElementById('heatmap');
+        var dipsWrap = document.getElementById('dipsWrap');
+        var dipsList = document.getElementById('dipsList');
+        var dipsCount = document.getElementById('dipsCount');
+        var peaksWrap = document.getElementById('peaksWrap');
+        var peaksList = document.getElementById('peaksList');
+        var metaAvg = document.getElementById('metaAvg');
+        var metaPeak = document.getElementById('metaPeak');
+        var metaPeakSub = document.getElementById('metaPeakSub');
+        var metaLow = document.getElementById('metaLow');
+        var metaLowSub = document.getElementById('metaLowSub');
+        var footnote = document.getElementById('chartFootnote');
+
+        var base = apiBase();
+        var currentDays = 30;
+        var currentData = null;
+        var hoverIndex = -1;
+        var busy = false;
+
+        function formatDate(iso) {
+            try {
+                var d = new Date(iso + 'T12:00:00');
+                return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+            } catch(e) { return iso; }
+        }
+        function formatLong(iso) {
+            try {
+                var d = new Date(iso + 'T12:00:00');
+                return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', weekday: 'short' });
+            } catch(e) { return iso; }
+        }
+
+        function niceMax(v) {
+            if (v <= 10) return 10;
+            if (v <= 20) return 20;
+            if (v <= 50) return Math.ceil(v/10)*10;
+            if (v <= 100) return Math.ceil(v/20)*20;
+            return Math.ceil(v/25)*25;
+        }
+
+        function levelClass(total, max) {
+            if (total === 0) return '';
+            var r = total / Math.max(1, max);
+            if (r < 0.25) return 'heat--1';
+            if (r < 0.5) return 'heat--2';
+            if (r < 0.78) return 'heat--3';
+            return 'heat--4';
+        }
+
+        function fetchSeries(days) {
+            if (busy) return;
+            busy = true;
+            currentDays = days;
+            if (statusEl) statusEl.textContent = 'загружаю…';
+            if (empty) empty.hidden = true;
+            // подсвечиваем активную кнопку
+            section.querySelectorAll('.period').forEach(function(b){
+                var isActive = String(b.dataset.days) === String(days);
+                b.classList.toggle('is-active', isActive);
+                b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            });
+
+            var url = base + '/api/series?days=' + encodeURIComponent(days);
+            var previewBase = previewApiBase();
+            var triedPreview = false;
+            var ctrl = new AbortController();
+            var slow = setTimeout(function(){
+                if (statusEl) statusEl.textContent = 'сервер просыпается…';
+            }, 3500);
+
+            function doFetch(fetchBase) {
+                var u = fetchBase + '/api/series?days=' + encodeURIComponent(days);
+                return fetch(u, { signal: ctrl.signal, cache: 'no-store' })
+                    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+                    .then(function(data){
+                        if ((!data.series || !data.series.length) && !data.is_demo) {
+                            return fetch(fetchBase + '/api/series?days='+days+'&demo=1', {cache:'no-store'})
+                                .then(function(r2){ return r2.json(); })
+                                .then(function(demo){ demo._emptyReal = true; return demo; });
+                        }
+                        return data;
+                    });
+            }
+
+            function handleData(data){
+                currentData = data;
+                render(data);
+                if (statusEl) {
+                    var upd = data.updated_at ? timeAgo(data.updated_at) : '';
+                    var note = data.is_demo ? 'демо · ' : '';
+                    statusEl.textContent = note + (upd ? 'обновлено ' + upd : (data._emptyReal ? 'пока нет реальных данных — показано как будет' : 'готово'));
+                }
+                try { localStorage.setItem('series_cache_' + days, JSON.stringify({t:Date.now(), d:data})); } catch(e){}
+            }
+
+            doFetch(base)
+                .then(handleData)
+                .catch(function(e){
+                    if (e && e.name === 'AbortError') throw e;
+                    // пробуем preview api если мы на e2b и base был render
+                    if (!triedPreview && previewBase && previewBase !== base) {
+                        triedPreview = true;
+                        if (statusEl) statusEl.textContent = 'пробую локальный api…';
+                        return doFetch(previewBase).then(handleData);
+                    }
+                    throw e;
+                })
+                .catch(function(e){
+                    if (e && e.name === 'AbortError') return;
+                    // пробуем кэш
+                    try {
+                        var raw = localStorage.getItem('series_cache_' + days);
+                        if (raw) {
+                            var c = JSON.parse(raw);
+                            if (c && c.d) { render(c.d); if(statusEl) statusEl.textContent = 'кэш · нет связи'; return; }
+                        }
+                    } catch(err){}
+                    if (statusEl) statusEl.textContent = 'нет связи — проверь api: ' + base + '/api/series';
+                    if (empty) empty.hidden = false;
+                    console.warn('series fail', e);
+                })
+                .finally(function(){ clearTimeout(slow); busy=false; });
+
+            setTimeout(function(){ if(busy) ctrl.abort(); }, 90000);
+        }
+
+        function render(data) {
+            if (!data || !data.series) return;
+            var series = data.series;
+            var moving = data.moving_avg_7 || [];
+            var max = data.max || 0;
+
+            if (!series.length) {
+                if (empty) empty.hidden = false;
+                canvas.style.opacity = '0.25';
+                return;
+            }
+            if (empty) empty.hidden = true;
+            canvas.style.opacity = '1';
+
+            // метрики
+            if (metaAvg) metaAvg.textContent = (data.average_per_day != null ? data.average_per_day : '—') + (data.average_per_day ? ' / день' : '');
+            // пик
+            if (metaPeak && data.peaks && data.peaks.length) {
+                var p = data.peaks[0];
+                metaPeak.textContent = formatDate(p.date) + ' · ' + spaced(p.total);
+                if (metaPeakSub) metaPeakSub.textContent = spaced(p.me) + ' я · ' + spaced(p.other) + ' ты';
+            } else if (metaPeak) { metaPeak.textContent = '—'; if(metaPeakSub) metaPeakSub.textContent=''; }
+
+            // самое тихо — минимум >0? или минимум вообще
+            if (metaLow) {
+                var sorted = series.slice().sort(function(a,b){ return a.total-b.total; });
+                var low = sorted[0];
+                if (low) {
+                    metaLow.textContent = formatDate(low.date) + ' · ' + spaced(low.total);
+                    if (metaLowSub) {
+                        if (low.total===0) metaLowSub.textContent = 'тишина — проверь, что было в этот день';
+                        else metaLowSub.textContent = 'на ' + spaced(Math.round((data.average_active_day||data.average_per_day)-low.total)) + ' меньше среднего';
+                    }
+                }
+            }
+
+            drawCanvas(series, moving, data);
+            drawHeatmap(series, max, data.dips || []);
+            drawDips(data.dips || [], data);
+            drawPeaks(data.peaks || [], max);
+            if (footnote) {
+                var f = '';
+                if (data.is_demo) f = 'Показаны демо-данные — так будет выглядеть график, когда сервер получит историю Telegram. Реальные цифры появятся после первой синхронизации.';
+                else if (data.dips && data.dips.length) f = 'Просадки — не приговор. Это просто места, где диалогу нужно было чуть больше тепла. Посмотри даты ниже и вспомни, что там было.';
+                else if (series.length) f = 'За выбранный период просадок не нашлось — вы держали связь ровно, без провалов. Так держать ❤️';
+                footnote.textContent = f;
+            }
+        }
+
+        function drawCanvas(series, moving, data) {
+            var ctx = canvas.getContext('2d');
+            if (!ctx) return;
+            var dpr = window.devicePixelRatio || 1;
+            var rect = canvas.getBoundingClientRect();
+            var W = Math.max(300, Math.round(rect.width * dpr));
+            var H = Math.round(340 * dpr);
+            if (canvas.width !== W || canvas.height !== H) {
+                canvas.width = W; canvas.height = H;
+            }
+            // стиль в пикселях ретины
+            var padL = Math.round(36 * dpr);
+            var padR = Math.round(14 * dpr);
+            var padT = Math.round(16 * dpr);
+            var padB = Math.round(28 * dpr);
+            var plotW = W - padL - padR;
+            var plotH = H - padT - padB;
+
+            ctx.clearRect(0,0,W,H);
+
+            var n = series.length;
+            if (n === 0) return;
+            var max = niceMax(data.max || 0);
+            if (max === 0) max = 10;
+            // если максимум маленький — делаем сетку 0-10
+            var yFor = function(v){ return padT + plotH - (v / max) * plotH; };
+            var xFor = function(i){ return n===1 ? padL+plotW/2 : padL + (i/(n-1))*plotW; };
+
+            // фон сетки
+            ctx.strokeStyle = 'rgba(255,255,255,.06)';
+            ctx.lineWidth = 1 * dpr;
+            var ticks = 4;
+            for (var t=0; t<=ticks; t++){
+                var y = padT + (t/ticks)*plotH;
+                ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W-padR, y); ctx.stroke();
+                // подписи Y
+                var val = Math.round(max - (t/ticks)*max);
+                ctx.fillStyle = 'rgba(255,255,255,.32)';
+                ctx.font = (11*dpr)+'px \"Segoe UI\", sans-serif';
+                ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+                ctx.fillText(String(val), padL - 8*dpr, y);
+            }
+            // вертикальные редкие линии
+            ctx.strokeStyle = 'rgba(255,255,255,.03)';
+            var vStep = n > 90 ? Math.ceil(n/6) : (n > 30 ? Math.ceil(n/8) : 6);
+            for (var i=0;i<n;i+=vStep){
+                var x = xFor(i);
+                ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT+plotH); ctx.stroke();
+            }
+
+            // заливка total area
+            var grad = ctx.createLinearGradient(0, padT, 0, padT+plotH);
+            grad.addColorStop(0, 'rgba(255,61,129,.34)');
+            grad.addColorStop(0.55, 'rgba(160,107,255,.16)');
+            grad.addColorStop(1, 'rgba(94,231,255,.04)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            for (var i=0;i<n;i++){
+                var x = xFor(i), y = yFor(series[i].total);
+                if (i===0) { ctx.moveTo(x, y); }
+                else ctx.lineTo(x, y);
+            }
+            // вниз к базе и обратно
+            ctx.lineTo(xFor(n-1), padT+plotH);
+            ctx.lineTo(xFor(0), padT+plotH);
+            ctx.closePath();
+            ctx.fill();
+
+            // тонкая линия всего
+            ctx.strokeStyle = 'rgba(255,61,129,.95)';
+            ctx.lineWidth = 2.2 * dpr;
+            ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+            ctx.beginPath();
+            for (var i=0;i<n;i++){
+                var x = xFor(i), y = yFor(series[i].total);
+                if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+            }
+            ctx.stroke();
+            // свечение линии всего
+            ctx.strokeStyle = 'rgba(255,61,129,.18)';
+            ctx.lineWidth = 8 * dpr;
+            ctx.stroke();
+
+            // линия Я (cyan)
+            ctx.strokeStyle = 'rgba(94,231,255,.95)';
+            ctx.lineWidth = 1.4 * dpr;
+            ctx.setLineDash([]);
+            ctx.beginPath();
+            for (var i=0;i<n;i++){
+                var x = xFor(i), y = yFor(series[i].me);
+                if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+            }
+            ctx.stroke();
+            // линия Ты (pink soft)
+            ctx.strokeStyle = 'rgba(255,138,182,.95)';
+            ctx.lineWidth = 1.4 * dpr;
+            ctx.beginPath();
+            for (var i=0;i<n;i++){
+                var x = xFor(i), y = yFor(series[i].other);
+                if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+            }
+            ctx.stroke();
+
+            // среднее 7 дней — белая пунктирная
+            if (moving && moving.length===n){
+                ctx.strokeStyle = 'rgba(255,255,255,.62)';
+                ctx.lineWidth = 1.1 * dpr;
+                ctx.setLineDash([6*dpr, 6*dpr]);
+                ctx.beginPath();
+                for (var i=0;i<n;i++){
+                    var x = xFor(i), y = yFor(moving[i].avg);
+                    if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // точки просадок
+            var dips = data.dips || [];
+            var dipSet = {};
+            dips.forEach(function(d){ dipSet[d.date]=d; });
+            for (var i=0;i<n;i++){
+                var pt = series[i];
+                if (dipSet[pt.date]) {
+                    var x = xFor(i), y = yFor(pt.total);
+                    // внешний ореол
+                    ctx.fillStyle = 'rgba(255,59,59,.18)';
+                    ctx.beginPath(); ctx.arc(x,y, 9*dpr, 0, Math.PI*2); ctx.fill();
+                    // белая обводка
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath(); ctx.arc(x,y, 4.2*dpr, 0, Math.PI*2); ctx.fill();
+                    // красная середина
+                    ctx.fillStyle = '#ff3b3b';
+                    ctx.beginPath(); ctx.arc(x,y, 2.8*dpr, 0, Math.PI*2); ctx.fill();
+                }
+            }
+
+            // ховер-индикатор
+            if (hoverIndex >=0 && hoverIndex < n){
+                var hx = xFor(hoverIndex), hy = yFor(series[hoverIndex].total);
+                ctx.strokeStyle = 'rgba(255,255,255,.16)';
+                ctx.lineWidth = 1 * dpr;
+                ctx.setLineDash([4*dpr,4*dpr]);
+                ctx.beginPath(); ctx.moveTo(hx, padT); ctx.lineTo(hx, padT+plotH); ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = 'rgba(18,12,30,.96)';
+                ctx.strokeStyle = 'rgba(255,61,129,.5)';
+                ctx.lineWidth = 1.2*dpr;
+                ctx.beginPath(); ctx.arc(hx, hy, 5*dpr, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = '#fff';
+                ctx.beginPath(); ctx.arc(hx, hy, 2.2*dpr, 0, Math.PI*2); ctx.fill();
+            }
+
+            // подписи X (разреженно)
+            ctx.fillStyle = 'rgba(255,255,255,.36)';
+            ctx.font = (10*dpr)+'px \"Segoe UI\", sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+            var labelStep;
+            if (n <= 18) labelStep = 2;
+            else if (n <= 40) labelStep = 5;
+            else if (n <= 90) labelStep = 14;
+            else if (n <= 180) labelStep = 30;
+            else labelStep = 45;
+            for (var i=0;i<n;i+=labelStep){
+                var x = xFor(i);
+                var lab = formatDate(series[i].date);
+                ctx.fillText(lab, x, padT+plotH+6*dpr);
+            }
+            // крайняя правая подпись тоже покажем если не попадает в шаг
+            if ((n-1) % labelStep !== 0){
+                var x = xFor(n-1);
+                ctx.fillText(formatDate(series[n-1].date), x, padT+plotH+6*dpr);
+            }
+
+            // сохраняем для ховера
+            canvas._plot = { padL:padL, padR:padR, padT:padT, padB:padB, W:W, H:H, plotW:plotW, plotH:plotH, n:n, xFor:xFor, yFor:yFor, max:max, series:series, moving:moving };
+        }
+
+        function drawHeatmap(series, max, dips) {
+            if (!heat) return;
+            heat.innerHTML = '';
+            var dipSet = {};
+            (dips||[]).forEach(function(d){ dipSet[d.date]=1; });
+            series.forEach(function(pt){
+                var div = document.createElement('div');
+                div.className = 'heat ' + levelClass(pt.total, max);
+                if (dipSet[pt.date]) div.classList.add('heat--dip');
+                var tipText = formatLong(pt.date) + ' — ' + pt.total + ' ' + plural(pt.total,'сообщение','сообщения','сообщений') + ' ('+pt.me+' я · '+pt.other+' ты)';
+                if (dipSet[pt.date]) tipText += ' · просадка';
+                div.setAttribute('data-tip', tipText);
+                div.addEventListener('click', function(){ highlightDate(pt.date); });
+                heat.appendChild(div);
+            });
+            // прокрутка в конец (к сегодняшнему дню)
+            heat.scrollLeft = heat.scrollWidth;
+        }
+
+        function drawDips(dips, data) {
+            if (!dipsWrap || !dipsList) return;
+            if (!dips || !dips.length) { dipsWrap.hidden = true; return; }
+            dipsWrap.hidden = false;
+            if (dipsCount) dipsCount.textContent = '· ' + dips.length + ' ' + plural(dips.length,'день','дня','дней');
+            // сортировка по severity убыв
+            var sorted = dips.slice().sort(function(a,b){ return b.severity - a.severity; });
+            dipsList.innerHTML = '';
+            sorted.forEach(function(d){
+                var li = document.createElement('li');
+                li.className = 'dip' + (d.severity >= 0.7 ? ' dip--severe' : '');
+                var dateLabel = formatLong(d.date);
+                var hint = d.total===0
+                    ? 'тишина — сообщений не было. Вспомни, что было в этот день: занятость, ссора, усталость?'
+                    : 'всего ' + d.total + ', обычно ~' + Math.round(d.ref_avg) + ' · просадка на ' + d.diff + plural(d.diff,' сообщение',' сообщения',' сообщений');
+                li.innerHTML =
+                    '<span>' +
+                    '<span class="dip__date">'+ dateLabel +'</span>' +
+                    '<span class="dip__meta">'+ hint +'<br><small style="color:rgba(255,255,255,.38)">'+ d.me+' я · '+d.other+' ты</small></span>' +
+                    '</span>' +
+                    '<span class="dip__badge">'+ (d.total===0 ? '0' : d.total) +' · '+ (d.severity>=0.7?'сильно':'заметно') +'</span>';
+                li.addEventListener('click', function(){ highlightDate(d.date); });
+                dipsList.appendChild(li);
+            });
+        }
+
+        function drawPeaks(peaks, max) {
+            if (!peaksWrap || !peaksList) return;
+            if (!peaks || !peaks.length) { peaksWrap.hidden = true; return; }
+            peaksWrap.hidden = false;
+            peaksList.innerHTML = '';
+            peaks.forEach(function(p){
+                var li = document.createElement('li');
+                li.className = 'peak';
+                var w = max ? Math.max(8, Math.min(100, (p.total/max)*100)) : 0;
+                li.innerHTML =
+                    '<span class="peak__date">'+ formatLong(p.date) +'</span>' +
+                    '<span class="peak__bar"><i style="width:'+ w +'%"></i></span>' +
+                    '<span class="dip__badge" style="background:rgba(160,107,255,.12); border-color:rgba(160,107,255,.22); color:#d9c2ff">'+ p.total +' · пик</span>';
+                li.addEventListener('click', function(){ highlightDate(p.date); });
+                peaksList.appendChild(li);
+            });
+        }
+
+        function highlightDate(dateStr) {
+            if (!currentData || !currentData.series) return;
+            var idx = -1;
+            for (var i=0;i<currentData.series.length;i++) if (currentData.series[i].date===dateStr) { idx=i; break; }
+            if (idx<0) return;
+            hoverIndex = idx;
+            drawCanvas(currentData.series, currentData.moving_avg_7, currentData);
+            showTip(idx);
+            // подсветка на пару секунд
+            setTimeout(function(){
+                // не сбрасываем если мышь всё ещё над графиком
+            }, 2600);
+            // прокрутка к графику на мобилке
+            try { canvas.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(e){}
+        }
+
+        function showTip(idx) {
+            if (!currentData || idx<0 || !tip || !canvas) return;
+            var pt = currentData.series[idx];
+            var mv = currentData.moving_avg_7 && currentData.moving_avg_7[idx];
+            var plot = canvas._plot;
+            if (!plot) return;
+            var x = plot.xFor(idx);
+            var rect = canvas.getBoundingClientRect();
+            var card = document.getElementById('chartCard');
+            var cardRect = card.getBoundingClientRect();
+            var tipX = rect.left - cardRect.left + x * (rect.width / plot.W);
+            var tipY = rect.top - cardRect.top + plot.yFor(pt.total) * (rect.height / plot.H);
+            tip.hidden = false;
+            tip.classList.remove('chart-tip--below');
+            tip.innerHTML = '<b>'+ formatLong(pt.date) +'</b> — ' + pt.total + ' ' + plural(pt.total,'сообщение','сообщения','сообщений') +
+                '<br>я: ' + pt.me + ' · ты: ' + pt.other +
+                (mv ? '<small>среднее 7д: ' + mv.avg + ' · обычно ' + Math.round(currentData.average_active_day||currentData.average_per_day) + '</small>' : '') +
+                ( (currentData.dips||[]).find(function(d){ return d.date===pt.date; }) ? '<small style="color:#ff8a8a">⚠️ просадка — посмотри, что было в этот день</small>' : '');
+            // сначала ставим, потом измеряем и клампим
+            tip.style.left = tipX + 'px';
+            tip.style.top = (tipY - 8) + 'px';
+            tip.style.transform = 'translate(-50%, -110%)';
+            // ждём layout
+            var tipW = tip.offsetWidth, tipH = tip.offsetHeight;
+            var cardW = cardRect.width, cardH = cardRect.height;
+            // горизонтальный кламп: не выходить за края карты
+            var minX = tipW/2 + 8, maxX = cardW - tipW/2 - 8;
+            if (tipX < minX) tipX = minX;
+            if (tipX > maxX) tipX = maxX;
+            // вертикальный: если сверху не влезает (высокий скачок), показываем снизу
+            var needBelow = false;
+            // tip сейчас позиционирован выше точки на 110% (tipH + 12 примерно)
+            // проверим, влезает ли верх
+            var topEdge = tipY - tipH - 14; // 14 = отступ + стрелка
+            if (topEdge < 8) needBelow = true;
+            if (needBelow) {
+                tip.classList.add('chart-tip--below');
+                tip.style.transform = 'translate(-50%, 16px)';
+            } else {
+                tip.classList.remove('chart-tip--below');
+                tip.style.transform = 'translate(-50%, -110%)';
+            }
+            tip.style.left = tipX + 'px';
+            tip.style.top = tipY + 'px'; // базовый Y — центр точки, трансформ уже смещает
+            // если снизу тоже не влезает (очень низкий), просто оставим выше
+        }
+        function hideTip(){ if(tip) { tip.hidden = true; tip.classList.remove('chart-tip--below'); } hoverIndex=-1; if(currentData) drawCanvas(currentData.series, currentData.moving_avg_7, currentData); }
+
+        // интерактив canvas
+        if (canvas) {
+            canvas.addEventListener('mousemove', function(e){
+                if (!currentData || !canvas._plot) return;
+                var rect = canvas.getBoundingClientRect();
+                var plot = canvas._plot;
+                var x = (e.clientX - rect.left) / rect.width * plot.W;
+                var rel = (x - plot.padL) / plot.plotW;
+                var idx = Math.round(rel * (plot.n - 1));
+                if (idx <0) idx=0; if(idx>=plot.n) idx=plot.n-1;
+                if (idx !== hoverIndex) {
+                    hoverIndex = idx;
+                    drawCanvas(currentData.series, currentData.moving_avg_7, currentData);
+                    showTip(idx);
+                }
+            });
+            canvas.addEventListener('mouseleave', hideTip);
+            canvas.addEventListener('click', function(e){
+                if (!currentData || hoverIndex<0) return;
+                showTip(hoverIndex);
+            });
+            // тач
+            canvas.addEventListener('touchstart', function(e){
+                var t = e.touches[0];
+                var rect = canvas.getBoundingClientRect();
+                var plot = canvas._plot;
+                if (!plot) return;
+                var x = (t.clientX - rect.left) / rect.width * plot.W;
+                var rel = (x - plot.padL) / plot.plotW;
+                var idx = Math.round(rel * (plot.n - 1));
+                if (idx<0) idx=0; if(idx>=plot.n) idx=plot.n-1;
+                hoverIndex = idx;
+                drawCanvas(currentData.series, currentData.moving_avg_7, currentData);
+                showTip(idx);
+            }, {passive:true});
+        }
+
+        // периоды
+        section.querySelectorAll('.period').forEach(function(btn){
+            btn.addEventListener('click', function(){
+                var days = parseInt(btn.dataset.days,10) || 0;
+                fetchSeries(days);
+            });
+        });
+
+        // ресайз
+        var ro = null;
+        try {
+            ro = new ResizeObserver(function(){ if(currentData) drawCanvas(currentData.series, currentData.moving_avg_7, currentData); });
+            ro.observe(canvas);
+        } catch(e){
+            window.addEventListener('resize', function(){ if(currentData) drawCanvas(currentData.series, currentData.moving_avg_7, currentData); });
+        }
+
+        // первый заход: пробуем из кэша сначала мгновенно, потом сеть
+        try {
+            var cached = localStorage.getItem('series_cache_30');
+            if (cached) {
+                var c = JSON.parse(cached);
+                if (c && c.d && c.d.series) { currentData = c.d; render(c.d); if(statusEl) statusEl.textContent = 'кэш · обновляю…'; }
+            }
+        } catch(e){}
+        fetchSeries(30);
+        // также обновляем при возврате на вкладку
+        document.addEventListener('visibilitychange', function(){
+            if (document.visibilityState === 'visible') fetchSeries(currentDays);
+        });
+        // синхронизируем обновление со статистикой — по кнопке обновить
+        var refreshBtn = document.getElementById('statsRefresh');
+        if (refreshBtn) refreshBtn.addEventListener('click', function(){ fetchSeries(currentDays); });
     }
 
     /* ============================================================
@@ -405,7 +1000,7 @@
         });
     }
 
-    function init() { hearts(); lightbox(); transitions(); stats(); mood(); }
+    function init() { hearts(); lightbox(); transitions(); stats(); talkDynamics(); mood(); }
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
     else init();

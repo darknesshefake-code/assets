@@ -12,18 +12,16 @@
 
 <div class="bg" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 
-<!-- шаги -->
+<!-- шаги — 4 раздела -->
 <nav class="steps" aria-label="Разделы">
-    <a class="step is-done" href="index.html"><b>1</b><span>Подарки</span></a>
-    <a class="step is-done" href="page2.html"><b>2</b><span>Укусы</span></a>
-    <a class="step is-done" href="page3.html"><b>3</b><span>Глаза</span></a>
-    <a class="step is-active" href="page5.html" aria-current="page"><b>4</b><span>Статистика</span></a>
-    <a class="step" href="page6.html"><b>5</b><span>Кнопка</span></a>
-    <a class="step" href="page4.html"><b>6</b><span>Письмо</span></a>
+    <a class="step" href="kompromat.html"><b>1</b><span>Воспоминания</span></a>
+    <a class="step is-active" href="page5.html" aria-current="page"><b>2</b><span>Статистика</span></a>
+    <a class="step" href="page6.html"><b>3</b><span>Кнопка</span></a>
+    <a class="step" href="page4.html"><b>4</b><span>Письмо</span></a>
 </nav>
 
 <main class="card">
-    <span class="kicker">Часть 4 · Статистика</span>
+    <span class="kicker">2 · Статистика</span>
 
     <h1>Наша переписка <em>в цифрах</em></h1>
 
@@ -62,6 +60,67 @@
         </div>
     </div>
 
+    <!-- График просадок -->
+    <section class="chart-section" id="chartSection" aria-label="График общения по дням">
+        <div class="chart-head">
+            <h2>Где мы <em>проседали</em> и где сияло</h2>
+            <p class="chart-sub">Каждая точка — день. Выше линия — больше болтали. Внизу подсказки, где общения стало меньше — чтобы сразу увидеть, где мог согрешить или ляпнуть лишнего.</p>
+            <div class="periods" role="tablist" aria-label="Период">
+                <button type="button" class="period is-active" data-days="30" role="tab" aria-selected="true">30 дней</button>
+                <button type="button" class="period" data-days="90" role="tab" aria-selected="false">90 дней</button>
+                <button type="button" class="period" data-days="180" role="tab" aria-selected="false">180 дней</button>
+                <button type="button" class="period" data-days="0" role="tab" aria-selected="false">Всё время</button>
+            </div>
+        </div>
+
+        <div class="chart-card" id="chartCard">
+            <canvas id="talkChart" width="860" height="340" aria-label="График сообщений по дням" role="img"></canvas>
+            <div class="chart-tip" id="chartTip" hidden></div>
+            <div class="chart-empty" id="chartEmpty" hidden>
+                <span class="chart-empty__icon">📡</span>
+                <b>Пока нечего рисовать</b>
+                <span>Сервер считает историю или ещё не проснулся. Нажми «Обновить» или подожди 30 сек — график появится сам.</span>
+            </div>
+            <div class="chart-status" id="chartStatus">загружаю динамику…</div>
+        </div>
+
+        <div class="chart-legend" aria-hidden="true">
+            <span><i class="dot dot--total"></i> Всего в день</span>
+            <span><i class="dot dot--me"></i> Я</span>
+            <span><i class="dot dot--her"></i> Ты</span>
+            <span><i class="dot dot--avg"></i> Среднее за 7 дней</span>
+            <span><i class="dot dot--dip"></i> Просадка</span>
+        </div>
+
+        <div class="chart-meta" id="chartMeta">
+            <div class="meta-card"><span class="meta-k">Среднее в день</span><b id="metaAvg">—</b><span class="meta-s">по выбранному периоду</span></div>
+            <div class="meta-card"><span class="meta-k">Самый активный день</span><b id="metaPeak">—</b><span class="meta-s" id="metaPeakSub"></span></div>
+            <div class="meta-card"><span class="meta-k">Самое тихо</span><b id="metaLow">—</b><span class="meta-s" id="metaLowSub"></span></div>
+        </div>
+
+        <!-- тепловая карта как у GitHub -->
+        <div class="heatmap-wrap">
+            <div class="heatmap-head">
+                <span>Карта дней <span class="hint">— чем ярче, тем больше общались</span></span>
+                <span class="heatmap-scale"><i></i><i></i><i></i><i></i><i></i> <span>меньше → больше</span></span>
+            </div>
+            <div class="heatmap" id="heatmap"></div>
+        </div>
+
+        <div class="dips-wrap" id="dipsWrap" hidden>
+            <h3>⚠️ Где просела активность <span id="dipsCount"></span></h3>
+            <p class="dips-hint">Это не упрёк — просто маркеры, чтобы вспомнить, что было в эти даты. Нажми на дату — увидишь подсказку.</p>
+            <ul class="dips" id="dipsList"></ul>
+        </div>
+
+        <div class="peaks-wrap" id="peaksWrap" hidden>
+            <h3>✨ Наши пики — когда болтали без остановки</h3>
+            <ul class="peaks" id="peaksList"></ul>
+        </div>
+
+        <p class="chart-footnote" id="chartFootnote"></p>
+    </section>
+
     <details class="tech">
         <summary>Как это работает?</summary>
         <p>Отдельный маленький сервис на Python (FastAPI + Telethon) авторизован в моём Telegram, читает только наш диалог и раз в минуту пересчитывает новые сообщения. Страница забирает готовые цифры у сервиса и рисует их здесь.</p>
@@ -75,8 +134,8 @@
     </details>
 
     <nav class="nav" aria-label="Переход между страницами">
-        <a class="btn btn--back" href="page3.html"><i>←</i> Назад</a>
-        <span class="counter">4 / 6</span>
+        <a class="btn btn--back" href="kompromat.html"><i>←</i> Воспоминания</a>
+        <span class="counter">2 / 4</span>
         <a class="btn btn--primary" href="page6.html">Дальше: кнопка <i>→</i></a>
     </nav>
 </main>

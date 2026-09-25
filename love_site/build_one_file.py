@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Собирает одностраничную версию сайта: все 6 разделов в одном HTML-файле,
+Собирает одностраничную версию сайта: все разделы в одном HTML-файле,
 CSS и JS внутри, фотографии — data-URI. Результат: love_site_one_file.html
+
+Структура сейчас — 4 входа + 3 письма (всего 7 секций):
+  1 Главная (хаб 4 кнопки)  -> index.html
+  2 Воспоминания (компромат 18 фото) -> kompromat.html
+  3 Статистика (график просадок) -> page5.html
+  4 Кнопка от грусти -> page6.html
+  5 Письмо 1 -> page4.html
+  6 Письмо 2 -> page7.html
+  7 Письмо 3 -> page8.html
+Старые page2.html / page3.html оставлены для совместимости, но в однофайловую
+не включаем — их фото уже внутри kompromat.html.
 """
 import base64, io, os, re, sys
 from PIL import Image, ImageOps
@@ -10,10 +21,20 @@ from PIL import Image, ImageOps
 SRC = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(SRC, 'love_site_one_file.html')
 
-PAGES = ['index.html', 'page2.html', 'page3.html', 'page5.html', 'page6.html', 'page4.html']
-MAP = {'index.html': '#p1', 'page2.html': '#p2', 'page3.html': '#p3',
-       'page5.html': '#p4', 'page6.html': '#p5', 'page4.html': '#p6'}
-STEP_LABELS = ['Подарки', 'Укусы', 'Глаза', 'Статистика', 'Кнопка', 'Письмо']
+PAGES = ['index.html', 'kompromat.html', 'page5.html', 'page6.html', 'page4.html', 'page7.html', 'page8.html']
+MAP = {
+    'index.html': '#p1',
+    'kompromat.html': '#p2',
+    'page5.html': '#p3',
+    'page6.html': '#p4',
+    'page4.html': '#p5',
+    'page7.html': '#p6',
+    'page8.html': '#p7',
+    # старые подарки/укусы/глаза тоже мапим на компромат для совместимости
+    'page2.html': '#p2',
+    'page3.html': '#p2',
+}
+STEP_LABELS = ['Главная', 'Воспоминания', 'Статистика', 'Кнопка', 'Письмо 1', 'Письмо 2', 'Письмо 3']
 MAX_SIDE, QUALITY = 1100, 78        # фото для одностраничной версии
 
 
@@ -34,7 +55,12 @@ def build():
     cache, sections = {}, []
     for i, page in enumerate(PAGES, 1):
         html = open(os.path.join(SRC, page), encoding='utf-8').read()
-        body = re.search(r'<main class="card">(.*?)</main>', html, re.S).group(1)
+        # берём содержимое <main class="card">
+        m = re.search(r'<main class="card">(.*?)</main>', html, re.S)
+        if not m:
+            print(f"WARN: не нашёл <main> в {page}")
+            continue
+        body = m.group(1)
 
         # внутренние ссылки → якоря разделов
         for target, anchor in MAP.items():
@@ -51,7 +77,7 @@ def build():
                 m.group(0).replace(m.group('src'), cache[big])
 
         body = re.sub(
-            r'<img\s+src="(?P<src>img/[^"]+)"(?:\s+data-full="(?P<full>img/[^"]+)")?',
+            r'<img\s+src="(?P<src>img/[^\"]+)"(?:\s+data-full="(?P<full>img/[^\"]+)\")?',
             swap, body)
 
         aria = ' aria-current="page"' if i == 1 else ''
