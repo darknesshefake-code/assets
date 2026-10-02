@@ -119,11 +119,6 @@
         <p class="chart-footnote" id="loveFootnote"></p>
     </section>
 
-    <div class="edit-hint">
-        <b>Где менять дату начала:</b> открой <code>stats_service/app.py</code> → переменная <code>DATING_START = date(2026,9,13)</code> или задай в Render → Environment → <code>DATING_START=2026-09-13</code>. На странице дата берётся из ответа <code>/api/love</code> → поле <code>dating.start</code> — менять только там, фронт пересчитает «дней вместе» сам.
-        <br><b>Где меняется слово:</b> в том же файле константа <code>LOVE_WORD = "люблю"</code> — можно поставить «love» или другое.
-    </div>
-
     <details class="tech">
         <summary>Как считается «люблю»?</summary>
         <p>Сервис читает только наш диалог (как и для статистики) и проверяет <code>text.lower().contains("люблю")</code>. Считается сообщение, а не количество слов в нём (одно сообщение с двумя «люблю» — это 1). Фото/видео с подписью тоже попадают, если в подписи было «люблю». Регистр не важен.</p>
