@@ -1085,7 +1085,56 @@ h1 em {
 }
 .hub-card--accent .hub-card__title { font-size: 22px; }
 
-/* воспоминания — секции внутри kompromat */
+/* люблю — герой с днями */
+.love-hero {
+    display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    padding: 22px 20px;
+    border-radius: 22px;
+    border: 1px solid rgba(255,61,129,.22);
+    background: linear-gradient(135deg, rgba(255,61,129,.14), rgba(160,107,255,.10) 60%, rgba(255,61,129,.06));
+    margin: 18px 0 20px;
+    position: relative; overflow: hidden;
+}
+.love-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(60% 80% at 85% 30%, rgba(255,61,129,.18), transparent 60%);
+    pointer-events: none;
+}
+.love-days { position: relative; z-index: 1; }
+.love-days__num {
+    display: block;
+    font-family: var(--serif);
+    font-size: clamp(38px, 7vw, 56px);
+    line-height: 1;
+    background: linear-gradient(100deg, var(--pink), var(--violet));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.love-days__label {
+    display: block; margin-top: 6px;
+    font-size: 14px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: #fff;
+}
+.love-days__sub {
+    display: block; margin-top: 6px;
+    font-size: 12.5px; color: var(--muted); line-height: 1.5;
+}
+.love-hero__heart {
+    position: relative; z-index: 1;
+    font-size: 54px; line-height: 1;
+    filter: drop-shadow(0 12px 24px rgba(255,61,129,.45));
+    animation: pulseHeart 2.2s ease-in-out infinite;
+}
+@keyframes pulseHeart {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+@media (max-width: 560px) {
+    .love-hero { flex-direction: column; text-align: center; }
+    .love-hero__heart { order: -1; }
+}
+
+/* вспоминания — секции внутри kompromat */
 .memory-block { margin: 26px 0 0; }
 .memory-block h2 {
     font-family: var(--serif);
@@ -1164,22 +1213,23 @@ h1 { margin-bottom: 14px; }
         <a class="step is-active" href="#p1" aria-current="page"><b>1</b><span>Главная</span></a>
         <a class="step" href="#p2"><b>2</b><span>Воспоминания</span></a>
         <a class="step" href="#p3"><b>3</b><span>Статистика</span></a>
-        <a class="step" href="#p4"><b>4</b><span>Кнопка</span></a>
-        <a class="step" href="#p5"><b>5</b><span>Письмо 1</span></a>
-        <a class="step" href="#p6"><b>6</b><span>Письмо 2</span></a>
-        <a class="step" href="#p7"><b>7</b><span>Письмо 3</span></a>
+        <a class="step" href="#p4"><b>4</b><span>Люблю</span></a>
+        <a class="step" href="#p5"><b>5</b><span>Кнопка</span></a>
+        <a class="step" href="#p6"><b>6</b><span>Письмо 1</span></a>
+        <a class="step" href="#p7"><b>7</b><span>Письмо 2</span></a>
+        <a class="step" href="#p8"><b>8</b><span>Письмо 3</span></a>
 </nav>
 
 <div class="deck">
         <section class="page is-active" id="p1" aria-label="Главная">
             <div class="card">
-    <span class="kicker">Главная · 4 входа</span>
+    <span class="kicker">Главная · 5 входов</span>
 
     <h1>Я собрал здесь <em>всё о нас</em></h1>
 
     <p class="lead">Это не просто сайт. Это мой способ сказать: я помню, я берегу, я выбираю тебя каждый день. Выбери, куда пойти — каждый вход ведёт в своё воспоминание о тебе.</p>
 
-    <div class="hub-grid" aria-label="Четыре раздела">
+    <div class="hub-grid" aria-label="Пять разделов">
         <a class="hub-card hub-card--accent" href="#p2">
             <span class="hub-card__icon">💌</span>
             <span class="hub-card__title">Воспоминания <em>/ компромат</em></span>
@@ -1194,14 +1244,21 @@ h1 { margin-bottom: 14px; }
             <span class="hub-card__meta">график · динамика <i>→</i></span>
         </a>
 
-        <a class="hub-card" href="#p4">
+        <a class="hub-card hub-card--accent" href="#p4" style="border-color: rgba(255,61,129,.28);">
+            <span class="hub-card__icon">❤️</span>
+            <span class="hub-card__title">Сколько <em>«люблю»</em></span>
+            <span class="hub-card__sub">Считаем каждое «люблю» и дни вместе с 13.09.2026 — кто сказал чаще и как по дням.</span>
+            <span class="hub-card__meta">дни вместе · график <i>→</i></span>
+        </a>
+
+        <a class="hub-card" href="#p5">
             <span class="hub-card__icon">💖</span>
             <span class="hub-card__title">Кнопка <em>от грусти</em></span>
             <span class="hub-card__sub">18 фраз, которые скажу, когда тебе взгрустнётся. Жми сколько хочешь — разлетаются сердечки.</span>
             <span class="hub-card__meta">18 фраз · без повторов <i>→</i></span>
         </a>
 
-        <a class="hub-card" href="#p5">
+        <a class="hub-card" href="#p6">
             <span class="hub-card__icon">✉️</span>
             <span class="hub-card__title">Письма <em>для тебя</em></span>
             <span class="hub-card__sub">3 письма, которые листаются как книга — влево/вправо, с фото и подписью в конце.</span>
@@ -1210,7 +1267,7 @@ h1 { margin-bottom: 14px; }
     </div>
 
     <div class="edit-hint">
-        <b>Где менять 4 кнопки:</b> открой <code>index.html</code> → найди блок <code>hub-grid</code>. Каждая карточка — <code>&lt;a class="hub-card" href="..."&gt;</code>. Поменяй <code>href</code>, иконку в <code>hub-card__icon</code>, заголовок и подпись. Чтобы добавить 5-ю кнопку — скопируй один блок целиком.
+        <b>Где менять 5 кнопок:</b> открой <code>index.html</code> → найди блок <code>hub-grid</code>. Каждая карточка — <code>&lt;a class="hub-card" href="..."&gt;</code>. Поменяй <code>href</code>, иконку в <code>hub-card__icon</code>, заголовок и подпись. Чтобы добавить ещё — скопируй блок. Дату начала для «Люблю» меняют в <code>stats_service/app.py → DATING_START</code> или в Render → <code>DATING_START=2026-09-13</code>.
     </div>
 
     <div class="divider">❤</div>
@@ -1347,7 +1404,7 @@ h1 { margin-bottom: 14px; }
 
     <nav class="nav" aria-label="Переход между разделами">
         <a class="btn btn--back" href="#p1"><i>←</i> На главную</a>
-        <span class="counter">1 / 4</span>
+        <span class="counter">1 / 5</span>
         <a class="btn btn--primary" href="#p3">Дальше: статистика <i>→</i></a>
     </nav>
 </div>
@@ -1468,14 +1525,136 @@ h1 { margin-bottom: 14px; }
 
     <nav class="nav" aria-label="Переход между страницами">
         <a class="btn btn--back" href="#p2"><i>←</i> Воспоминания</a>
-        <span class="counter">2 / 4</span>
-        <a class="btn btn--primary" href="#p4">Дальше: кнопка <i>→</i></a>
+        <span class="counter">2 / 5</span>
+        <a class="btn btn--primary" href="#p5">Дальше: кнопка <i>→</i></a>
     </nav>
 </div>
         </section>
-        <section class="page" id="p4" aria-label="Кнопка">
+        <section class="page" id="p4" aria-label="Люблю">
             <div class="card">
-    <span class="kicker">3 · Кнопка от грусти</span>
+    <span class="kicker">3 · Люблю — считаем каждое «люблю»</span>
+
+    <h1>Сколько <em>«люблю»</em> мы сказали</h1>
+
+    <p class="lead">Считаю только сообщения, где есть слово «люблю» — без разницы, с большой буквы или с сердечком рядом. Каждое — маленькое обещание. Здесь видно, кто говорил чаще, и как менялось это «люблю» по дням с <b>13.09.2026</b> — дня, когда мы стали «мы».</p>
+
+    <!-- Дни вместе -->
+    <div class="love-hero" id="loveHero">
+        <div class="love-days">
+            <span class="love-days__num" id="loveDaysNum"><span class="skeleton" style="width:80px;height:48px"></span></span>
+            <span class="love-days__label" id="loveDaysLabel">дней вместе</span>
+            <span class="love-days__sub" id="loveDaysSub">с 13.09.2026 · <span id="loveDaysWeeks">—</span> недель</span>
+        </div>
+        <div class="love-hero__heart">❤️</div>
+    </div>
+
+    <!-- Доска люблю -->
+    <div class="board" id="loveBoard" data-state="loading">
+        <div class="board__head">
+            <span class="board__who" id="loveWho">Мы и наше «люблю» 💌</span>
+            <span class="board__when" id="loveUpdated">считаю…</span>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat stat--me">
+                <span class="stat__label">Я сказал «люблю»</span>
+                <span class="stat__value" id="loveMe"><span class="skeleton"></span></span>
+                <span class="stat__sub" id="loveMeSub">— % от всех «люблю»</span>
+                <div class="bar"><i id="loveBarMe"></i></div>
+            </div>
+
+            <div class="stat stat--her">
+                <span class="stat__label">Ты сказала «люблю»</span>
+                <span class="stat__value" id="loveOther"><span class="skeleton"></span></span>
+                <span class="stat__sub" id="loveOtherSub">— % от всех «люблю»</span>
+                <div class="bar"><i id="loveBarOther"></i></div>
+            </div>
+        </div>
+
+        <div class="board__foot">
+            <span class="verdict" id="loveVerdict">смотрю, кто чаще…</span>
+            <span class="hint">Всего <b id="loveTotal">—</b> «люблю» · в среднем <b id="loveAvg">—</b> в день · <span id="loveTopDay"></span></span>
+        </div>
+
+        <div class="board__foot">
+            <button class="btn" type="button" id="loveRefresh">Обновить ↻</button>
+            <span class="hint">Считаются сообщения, где есть «люблю» (люблю, Люблю, ЛЮБЛЮ — без разницы). Фото с подписью тоже считаются, если в подписи было «люблю».</span>
+        </div>
+    </div>
+
+    <!-- График люблю по дням -->
+    <section class="chart-section" id="loveSection" aria-label="График люблю по дням">
+        <div class="chart-head">
+            <h2>Как мы говорили <em>«люблю»</em> по дням</h2>
+            <p class="chart-sub">Каждая точка — день. Тёмно-розовые пики — дни, когда «люблю» звучало особенно часто. Пунктир — среднее за 7 дней.</p>
+            <div class="periods" role="tablist" aria-label="Период">
+                <button type="button" class="period is-active" data-days="30" data-love="1" role="tab" aria-selected="true">30 дней</button>
+                <button type="button" class="period" data-days="90" data-love="1" role="tab" aria-selected="false">90 дней</button>
+                <button type="button" class="period" data-days="180" data-love="1" role="tab" aria-selected="false">180 дней</button>
+                <button type="button" class="period" data-days="0" data-love="1" role="tab" aria-selected="false">Всё время</button>
+            </div>
+        </div>
+
+        <div class="chart-card" id="loveCard">
+            <canvas id="loveChart" width="860" height="340" aria-label="График люблю по дням" role="img"></canvas>
+            <div class="chart-tip" id="loveTip" hidden></div>
+            <div class="chart-empty" id="loveEmpty" hidden>
+                <span class="chart-empty__icon">💌</span>
+                <b>Пока нет «люблю» за период</b>
+                <span>Может, в эти дни писали иначе? Попробуй «Всё время» или подожди — сервер досчитывает историю.</span>
+            </div>
+            <div class="chart-status" id="loveStatus">загружаю динамику…</div>
+        </div>
+
+        <div class="chart-legend" aria-hidden="true">
+            <span><i class="dot dot--total"></i> Всего «люблю» в день</span>
+            <span><i class="dot dot--me"></i> Я</span>
+            <span><i class="dot dot--her"></i> Ты</span>
+            <span><i class="dot dot--avg"></i> Среднее 7д</span>
+        </div>
+
+        <div class="heatmap-wrap">
+            <div class="heatmap-head">
+                <span>Карта «люблю» <span class="hint">— ярче, где чаще говорили</span></span>
+                <span class="heatmap-scale"><i></i><i></i><i></i><i></i><i></i> <span>меньше → больше</span></span>
+            </div>
+            <div class="heatmap" id="loveHeatmap"></div>
+        </div>
+
+        <div class="peaks-wrap" id="lovePeaksWrap" hidden>
+            <h3>✨ Пики «люблю» — самые тёплые дни</h3>
+            <ul class="peaks" id="lovePeaksList"></ul>
+        </div>
+
+        <p class="chart-footnote" id="loveFootnote"></p>
+    </section>
+
+    <div class="edit-hint">
+        <b>Где менять дату начала:</b> открой <code>stats_service/app.py</code> → переменная <code>DATING_START = date(2026,9,13)</code> или задай в Render → Environment → <code>DATING_START=2026-09-13</code>. На странице дата берётся из ответа <code>/api/love</code> → поле <code>dating.start</code> — менять только там, фронт пересчитает «дней вместе» сам.
+        <br><b>Где меняется слово:</b> в том же файле константа <code>LOVE_WORD = "люблю"</code> — можно поставить «love» или другое.
+    </div>
+
+    <details class="tech">
+        <summary>Как считается «люблю»?</summary>
+        <p>Сервис читает только наш диалог (как и для статистики) и проверяет <code>text.lower().contains("люблю")</code>. Считается сообщение, а не количество слов в нём (одно сообщение с двумя «люблю» — это 1). Фото/видео с подписью тоже попадают, если в подписи было «люблю». Регистр не важен.</p>
+        <ul>
+            <li>дата начала — <code>13.09.2026</code> (можно переопределить переменной <code>DATING_START</code>);</li>
+            <li>«дней вместе» = сегодня − 13.09.2026 + 1 (13.09 = день 1);</li>
+            <li>API: <code>GET /api/love?days=30|90|180|0</code> отдаёт <code>totals</code>, <code>series</code>, <code>moving_avg_7</code>, <code>peaks</code>, <code>dating</code>;</li>
+            <li>демо-данные генерит, когда Telegram ещё не подключен.</li>
+        </ul>
+    </details>
+
+    <nav class="nav" aria-label="Переход между разделами">
+        <a class="btn btn--back" href="#p3"><i>←</i> Статистика</a>
+        <span class="counter">3 / 5</span>
+        <a class="btn btn--primary" href="#p5">Дальше: кнопка <i>→</i></a>
+    </nav>
+</div>
+        </section>
+        <section class="page" id="p5" aria-label="Кнопка">
+            <div class="card">
+    <span class="kicker">4 · Кнопка от грусти</span>
 
     <h1>Нажми, если <em>взгрустнулось</em></h1>
 
@@ -1519,14 +1698,14 @@ h1 { margin-bottom: 14px; }
 
     <nav class="nav" aria-label="Переход между страницами">
         <a class="btn btn--back" href="#p3"><i>←</i> Статистика</a>
-        <span class="counter">3 / 4</span>
-        <a class="btn btn--primary" href="#p5">Читать письмо 1 <i>→</i></a>
+        <span class="counter">4 / 5</span>
+        <a class="btn btn--primary" href="#p6">Читать письмо 1 <i>→</i></a>
     </nav>
 </div>
         </section>
-        <section class="page" id="p5" aria-label="Письмо 1">
+        <section class="page" id="p6" aria-label="Письмо 1">
             <div class="card">
-    <span class="kicker">4 · Письмо — 1 из 3</span>
+    <span class="kicker">5 · Письмо — 1 из 3</span>
 
     <h1>Всё, что я хочу тебе <em>сказать</em></h1>
 
@@ -1581,17 +1760,17 @@ h1 { margin-bottom: 14px; }
 
     <!-- листалка писем -->
     <nav class="letter-nav" aria-label="Листание писем">
-        <a class="btn btn--back" href="#p4"><i>←</i> Кнопка</a>
+        <a class="btn btn--back" href="#p5"><i>←</i> Кнопка</a>
         <span class="counter">Письмо 1 / 3 <span class="letter-dots"><i class="is-active"></i><i></i><i></i></span></span>
-        <a class="btn btn--primary" href="#p6">Дальше <i>→</i></a>
+        <a class="btn btn--primary" href="#p7">Дальше <i>→</i></a>
     </nav>
 
     <div class="sig-line">листай → там ещё два письма ❤️</div>
 </div>
         </section>
-        <section class="page" id="p6" aria-label="Письмо 2">
+        <section class="page" id="p7" aria-label="Письмо 2">
             <div class="card">
-    <span class="kicker">4 · Письмо — 2 из 3</span>
+    <span class="kicker">5 · Письмо — 2 из 3</span>
 
     <h1>Как ты <em>делаешь меня</em> лучше</h1>
 
@@ -1632,17 +1811,17 @@ h1 { margin-bottom: 14px; }
     </div>
 
     <nav class="letter-nav" aria-label="Листание писем">
-        <a class="btn btn--back" href="#p5"><i>←</i> Назад</a>
+        <a class="btn btn--back" href="#p6"><i>←</i> Назад</a>
         <span class="counter">Письмо 2 / 3 <span class="letter-dots"><i></i><i class="is-active"></i><i></i></span></span>
-        <a class="btn btn--primary" href="#p7">Дальше <i>→</i></a>
+        <a class="btn btn--primary" href="#p8">Дальше <i>→</i></a>
     </nav>
 
     <div class="sig-line">ещё одно — самое важное ❤️</div>
 </div>
         </section>
-        <section class="page" id="p7" aria-label="Письмо 3">
+        <section class="page" id="p8" aria-label="Письмо 3">
             <div class="card">
-    <span class="kicker">4 · Письмо — 3 из 3</span>
+    <span class="kicker">5 · Письмо — 3 из 3</span>
 
     <h1>Моё будущее — <em>это ты</em></h1>
 
@@ -1684,7 +1863,7 @@ h1 { margin-bottom: 14px; }
     </div>
 
     <nav class="letter-nav" aria-label="Листание писем">
-        <a class="btn btn--back" href="#p6"><i>←</i> Назад</a>
+        <a class="btn btn--back" href="#p7"><i>←</i> Назад</a>
         <span class="counter">Письмо 3 / 3 <span class="letter-dots"><i></i><i></i><i class="is-active"></i></span></span>
         <a class="btn" href="#p1">На главную ↺</a>
     </nav>
@@ -2636,6 +2815,472 @@ h1 { margin-bottom: 14px; }
     }
 
     /* ============================================================
+       Люблю — сколько «люблю» и дней вместе
+       ============================================================ */
+    function loveDynamics() {
+        var heroNum = document.getElementById('loveDaysNum');
+        var heroLabel = document.getElementById('loveDaysLabel');
+        var heroSub = document.getElementById('loveDaysSub');
+        var heroWeeks = document.getElementById('loveDaysWeeks');
+        // если нет блока люблю — нечего делать
+        var board = document.getElementById('loveBoard');
+        var section = document.getElementById('loveSection');
+        if (!board && !section && !heroNum) return;
+
+        var ui = {
+            who: document.getElementById('loveWho'),
+            when: document.getElementById('loveUpdated'),
+            me: document.getElementById('loveMe'),
+            meSub: document.getElementById('loveMeSub'),
+            barMe: document.getElementById('loveBarMe'),
+            other: document.getElementById('loveOther'),
+            otherSub: document.getElementById('loveOtherSub'),
+            barOther: document.getElementById('loveBarOther'),
+            total: document.getElementById('loveTotal'),
+            avg: document.getElementById('loveAvg'),
+            topDay: document.getElementById('loveTopDay'),
+            verdict: document.getElementById('loveVerdict'),
+            refresh: document.getElementById('loveRefresh')
+        };
+
+        var canvas = document.getElementById('loveChart');
+        var tip = document.getElementById('loveTip');
+        var empty = document.getElementById('loveEmpty');
+        var statusEl = document.getElementById('loveStatus');
+        var heat = document.getElementById('loveHeatmap');
+        var peaksWrap = document.getElementById('lovePeaksWrap');
+        var peaksList = document.getElementById('lovePeaksList');
+        var footnote = document.getElementById('loveFootnote');
+
+        var base = apiBase();
+        var previewBase = previewApiBase();
+        var currentDays = 30;
+        var currentData = null;
+        var hoverIndex = -1;
+        var busy = false;
+
+        function formatDate(iso) {
+            try { var d = new Date(iso + 'T12:00:00'); return d.toLocaleDateString('ru-RU', { day:'numeric', month:'short' }); } catch(e){ return iso; }
+        }
+        function formatLong(iso) {
+            try { var d = new Date(iso + 'T12:00:00'); return d.toLocaleDateString('ru-RU', { day:'numeric', month:'long', weekday:'short' }); } catch(e){ return iso; }
+        }
+        function niceMax(v){
+            if(v<=6) return 6;
+            if(v<=12) return 12;
+            if(v<=20) return 20;
+            if(v<=40) return Math.ceil(v/5)*5;
+            return Math.ceil(v/10)*10;
+        }
+        function levelClass(total, max){
+            if(total===0) return '';
+            var r = total / Math.max(1,max);
+            if(r<0.25) return 'heat--1';
+            if(r<0.5) return 'heat--2';
+            if(r<0.78) return 'heat--3';
+            return 'heat--4';
+        }
+
+        function renderHero(dating){
+            if (!dating || !heroNum) return;
+            var days = dating.days;
+            heroNum.textContent = spaced(days);
+            if (heroLabel) heroLabel.textContent = plural(days,'день','дня','дней') + ' вместе';
+            if (heroWeeks) heroWeeks.textContent = dating.weeks + ' недель';
+            if (heroSub) {
+                var start = '';
+                try { var d = new Date(dating.start+'T12:00:00'); start = d.toLocaleDateString('ru-RU'); } catch(e){ start = dating.start; }
+                heroSub.innerHTML = 'с ' + start + ' · <span id="loveDaysWeeks">' + (dating.weeks+' недель') + '</span>';
+                // heroWeeks уже внутри, переставляем
+                var w = document.getElementById('loveDaysWeeks');
+                if (w) w.textContent = dating.weeks + ' недель';
+            }
+            // анимация числа
+            if (heroNum && !calm) {
+                heroNum.style.transform = 'scale(0.92)';
+                setTimeout(function(){ heroNum.style.transform = 'scale(1)'; heroNum.style.transition = 'transform .5s cubic-bezier(.22,1,.36,1)'; }, 50);
+            }
+        }
+
+        function renderBoard(d){
+            if (!d || !board) return;
+            var lm = (d.totals && d.totals.love_me) != null ? d.totals.love_me : (d.me && d.me.love) || 0;
+            var lo = (d.totals && d.totals.love_other) != null ? d.totals.love_other : (d.other && d.other.love) || 0;
+            var lt = (d.totals && d.totals.love_total) != null ? d.totals.love_total : (lm+lo);
+            // fallback из d.love_percent или считаем
+            var pctMe = lt ? Math.round(lm/lt*100) : 0;
+            var pctOther = lt ? 100 - pctMe : 0;
+            countUp(ui.me, lm);
+            countUp(ui.other, lo);
+            if (ui.meSub) ui.meSub.textContent = pctMe + '% от всех «люблю»';
+            if (ui.otherSub) ui.otherSub.textContent = pctOther + '% от всех «люблю»';
+            if (ui.barMe) ui.barMe.style.width = pctMe + '%';
+            if (ui.barOther) ui.barOther.style.width = pctOther + '%';
+            if (ui.total) ui.total.textContent = spaced(lt);
+            if (ui.avg && d.average_per_day != null) ui.avg.textContent = d.average_per_day;
+            if (ui.topDay && d.peaks && d.peaks.length) {
+                var p = d.peaks[0];
+                ui.topDay.textContent = 'пик ' + formatDate(p.date) + ' · ' + spaced(p.love_total) + ' «люблю»';
+            }
+            if (ui.who) ui.who.textContent = 'Мы и наше «люблю» 💌';
+            if (ui.when) {
+                var when = timeAgo(d.updated_at);
+                ui.when.textContent = when ? 'обновлено ' + when : (d.is_demo ? 'демо' : 'готово');
+            }
+            if (ui.verdict) {
+                if (!lt) ui.verdict.textContent = 'пока ни одного «люблю» в этом периоде — но они точно есть за всё время';
+                else if (lm === lo) ui.verdict.textContent = 'поровну «люблю» — красиво, как и во всём ⚖️';
+                else if (lm > lo) ui.verdict.textContent = 'Я сказал «люблю» чаще — на ' + spaced(lm - lo) + ' ' + plural(lm-lo,'раз','раза','раз');
+                else ui.verdict.textContent = 'Ты сказала «люблю» чаще — на ' + spaced(lo - lm) + ' ' + plural(lo-lm,'раз','раза','раз') + ' ❤️';
+            }
+            board.classList.remove('is-error');
+            if (d.is_demo) board.classList.add('is-stale');
+            else board.classList.remove('is-stale');
+            // dating hero тоже обновим если пришёл
+            if (d.dating) renderHero(d.dating);
+        }
+
+        function fetchLove(days){
+            if (busy) return;
+            busy = true;
+            currentDays = days;
+            if (statusEl) statusEl.textContent = 'загружаю…';
+            if (empty) empty.hidden = true;
+            if (section) section.querySelectorAll('.period').forEach(function(b){
+                var isActive = String(b.dataset.days) === String(days);
+                b.classList.toggle('is-active', isActive);
+                b.setAttribute('aria-selected', isActive?'true':'false');
+            });
+            var ctrl = new AbortController();
+            var slow = setTimeout(function(){ if(statusEl) statusEl.textContent='сервер просыпается…'; }, 3500);
+            function doFetch(fetchBase){
+                var u = fetchBase + '/api/love?days=' + encodeURIComponent(days);
+                return fetch(u, { signal: ctrl.signal, cache:'no-store' })
+                    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); });
+            }
+            function handleData(data){
+                currentData = data;
+                // hero dating может прийти отдельно
+                if (data.dating) renderHero(data.dating);
+                renderBoard(data);
+                renderChart(data);
+                if (statusEl){
+                    var upd = data.updated_at ? timeAgo(data.updated_at) : '';
+                    var note = data.is_demo ? 'демо · ' : '';
+                    statusEl.textContent = note + (upd ? 'обновлено '+upd : 'готово');
+                }
+                try { localStorage.setItem('love_cache_'+days, JSON.stringify({t:Date.now(), d:data})); } catch(e){}
+            }
+            doFetch(base)
+                .then(function(d){
+                    // если пусто и не демо — попробуем демо
+                    if ((!d.series || !d.series.length) && !d.is_demo) {
+                        return fetch(base + '/api/love?days='+days+'&demo=1', {cache:'no-store'})
+                            .then(function(r){ return r.json(); })
+                            .then(function(demo){ demo._emptyReal=true; return demo; });
+                    }
+                    return d;
+                })
+                .then(handleData)
+                .catch(function(e){
+                    if(e && e.name==='AbortError') throw e;
+                    if(previewBase && previewBase!==base){
+                        return doFetch(previewBase).then(function(d){
+                            if((!d.series||!d.series.length)&&!d.is_demo){
+                                return fetch(previewBase+'/api/love?days='+days+'&demo=1',{cache:'no-store'}).then(function(r){return r.json();}).then(function(demo){demo._emptyReal=true;return demo;});
+                            }
+                            return d;
+                        }).then(handleData);
+                    }
+                    throw e;
+                })
+                .catch(function(e){
+                    if(e && e.name==='AbortError') return;
+                    try{
+                        var raw = localStorage.getItem('love_cache_'+days);
+                        if(raw){ var c=JSON.parse(raw); if(c&&c.d){ renderBoard(c.d); renderChart(c.d); if(statusEl) statusEl.textContent='кэш · нет связи'; return; } }
+                    }catch(err){}
+                    if(statusEl) statusEl.textContent='нет связи — проверь api: '+base+'/api/love';
+                    if(empty) empty.hidden=false;
+                    console.warn('love fail',e);
+                })
+                .finally(function(){ clearTimeout(slow); busy=false; });
+            setTimeout(function(){ if(busy) ctrl.abort(); }, 90000);
+        }
+
+        function renderChart(data){
+            if (!data || !section) return;
+            var series = data.series || [];
+            var moving = data.moving_avg_7 || [];
+            var max = data.max || 0;
+            if (!canvas) return;
+            if (!series.length){
+                if(empty) empty.hidden=false;
+                canvas.style.opacity='0.25';
+                return;
+            }
+            if(empty) empty.hidden=true;
+            canvas.style.opacity='1';
+            drawLoveCanvas(series, moving, data);
+            drawLoveHeatmap(series, max);
+            drawLovePeaks(data.peaks||[], max);
+            if (footnote){
+                var f='';
+                if(data.is_demo) f='Демо-данные «люблю» — реальные появятся после синхронизации Telegram. Но механика уже такая же.';
+                else if(series.length && max===0) f='За выбранный период «люблю» не нашлось — попробуй «Всё время».';
+                else if(data.peaks && data.peaks.length) f='Пики — дни, когда вы чаще всего говорили «люблю». Нажми на дату — подсветится на графике.';
+                else f='Каждый день с «люблю» — уже победа ❤️';
+                footnote.textContent=f;
+            }
+        }
+
+        function drawLoveCanvas(series, moving, data){
+            var ctx = canvas.getContext('2d');
+            if(!ctx) return;
+            var dpr = window.devicePixelRatio||1;
+            var rect = canvas.getBoundingClientRect();
+            var W = Math.max(300, Math.round(rect.width*dpr));
+            var H = Math.round(340*dpr);
+            if(canvas.width!==W||canvas.height!==H){ canvas.width=W; canvas.height=H; }
+            var padL=Math.round(36*dpr), padR=Math.round(14*dpr), padT=Math.round(16*dpr), padB=Math.round(28*dpr);
+            var plotW=W-padL-padR, plotH=H-padT-padB;
+            ctx.clearRect(0,0,W,H);
+            var n=series.length;
+            if(n===0) return;
+            var max=niceMax(data.max||0);
+            if(max===0) max=6;
+            var yFor=function(v){ return padT+plotH-(v/max)*plotH; };
+            var xFor=function(i){ return n===1?padL+plotW/2:padL+(i/(n-1))*plotW; };
+            // сетка
+            ctx.strokeStyle='rgba(255,255,255,.06)';
+            ctx.lineWidth=1*dpr;
+            var ticks=4;
+            for(var t=0;t<=ticks;t++){
+                var y=padT+(t/ticks)*plotH;
+                ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(W-padR,y); ctx.stroke();
+                var val=Math.round(max-(t/ticks)*max);
+                ctx.fillStyle='rgba(255,255,255,.32)';
+                ctx.font=(11*dpr)+'px \"Segoe UI\", sans-serif';
+                ctx.textAlign='right'; ctx.textBaseline='middle';
+                ctx.fillText(String(val), padL-8*dpr, y);
+            }
+            ctx.strokeStyle='rgba(255,255,255,.03)';
+            var vStep=n>90?Math.ceil(n/6):(n>30?Math.ceil(n/8):6);
+            for(var i=0;i<n;i+=vStep){
+                var x=xFor(i);
+                ctx.beginPath(); ctx.moveTo(x,padT); ctx.lineTo(x,padT+plotH); ctx.stroke();
+            }
+            // заливка total любовь
+            var grad=ctx.createLinearGradient(0,padT,0,padT+plotH);
+            grad.addColorStop(0,'rgba(255,61,129,.36)');
+            grad.addColorStop(0.55,'rgba(255,61,129,.16)');
+            grad.addColorStop(1,'rgba(94,231,255,.04)');
+            ctx.fillStyle=grad;
+            ctx.beginPath();
+            for(var i=0;i<n;i++){
+                var x=xFor(i), y=yFor(series[i].love_total);
+                if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+            }
+            ctx.lineTo(xFor(n-1),padT+plotH);
+            ctx.lineTo(xFor(0),padT+plotH);
+            ctx.closePath();
+            ctx.fill();
+            // линия total
+            ctx.strokeStyle='rgba(255,61,129,.95)';
+            ctx.lineWidth=2.2*dpr; ctx.lineJoin='round'; ctx.lineCap='round';
+            ctx.beginPath();
+            for(var i=0;i<n;i++){ var x=xFor(i), y=yFor(series[i].love_total); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }
+            ctx.stroke();
+            ctx.strokeStyle='rgba(255,61,129,.18)'; ctx.lineWidth=8*dpr; ctx.stroke();
+            // я
+            ctx.strokeStyle='rgba(94,231,255,.95)';
+            ctx.lineWidth=1.4*dpr; ctx.setLineDash([]);
+            ctx.beginPath();
+            for(var i=0;i<n;i++){ var x=xFor(i), y=yFor(series[i].love_me); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }
+            ctx.stroke();
+            // ты
+            ctx.strokeStyle='rgba(255,138,182,.95)';
+            ctx.lineWidth=1.4*dpr;
+            ctx.beginPath();
+            for(var i=0;i<n;i++){ var x=xFor(i), y=yFor(series[i].love_other); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }
+            ctx.stroke();
+            // среднее
+            if(moving && moving.length===n){
+                ctx.strokeStyle='rgba(255,255,255,.62)';
+                ctx.lineWidth=1.1*dpr; ctx.setLineDash([6*dpr,6*dpr]);
+                ctx.beginPath();
+                for(var i=0;i<n;i++){ var x=xFor(i), y=yFor(moving[i].avg); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }
+                ctx.stroke(); ctx.setLineDash([]);
+            }
+            // ховер
+            if(hoverIndex>=0 && hoverIndex<n){
+                var hx=xFor(hoverIndex), hy=yFor(series[hoverIndex].love_total);
+                ctx.strokeStyle='rgba(255,255,255,.16)';
+                ctx.lineWidth=1*dpr; ctx.setLineDash([4*dpr,4*dpr]);
+                ctx.beginPath(); ctx.moveTo(hx,padT); ctx.lineTo(hx,padT+plotH); ctx.stroke(); ctx.setLineDash([]);
+                ctx.fillStyle='rgba(18,12,30,.96)'; ctx.strokeStyle='rgba(255,61,129,.5)'; ctx.lineWidth=1.2*dpr;
+                ctx.beginPath(); ctx.arc(hx,hy,5*dpr,0,Math.PI*2); ctx.fill(); ctx.stroke();
+                ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(hx,hy,2.2*dpr,0,Math.PI*2); ctx.fill();
+            }
+            // подписи X
+            ctx.fillStyle='rgba(255,255,255,.36)';
+            ctx.font=(10*dpr)+'px \"Segoe UI\", sans-serif';
+            ctx.textAlign='center'; ctx.textBaseline='top';
+            var labelStep;
+            if(n<=18) labelStep=2;
+            else if(n<=40) labelStep=5;
+            else if(n<=90) labelStep=14;
+            else if(n<=180) labelStep=30;
+            else labelStep=45;
+            for(var i=0;i<n;i+=labelStep){
+                var x=xFor(i);
+                ctx.fillText(formatDate(series[i].date), x, padT+plotH+6*dpr);
+            }
+            if((n-1)%labelStep!==0){
+                var x=xFor(n-1);
+                ctx.fillText(formatDate(series[n-1].date), x, padT+plotH+6*dpr);
+            }
+            canvas._lovePlot={padL:padL,padR:padR,padT:padT,padB:padB,W:W,H:H,plotW:plotW,plotH:plotH,n:n,xFor:xFor,yFor:yFor,max:max,series:series,moving:moving};
+        }
+
+        function drawLoveHeatmap(series, max){
+            if(!heat) return;
+            heat.innerHTML='';
+            series.forEach(function(pt){
+                var div=document.createElement('div');
+                div.className='heat '+levelClass(pt.love_total, max);
+                var tipText=formatLong(pt.date)+' — '+pt.love_total+' '+plural(pt.love_total,'«люблю»','«люблю»','«люблю»')+' ('+pt.love_me+' я · '+pt.love_other+' ты)';
+                div.setAttribute('data-tip', tipText);
+                div.addEventListener('click', function(){ highlightLoveDate(pt.date); });
+                heat.appendChild(div);
+            });
+            heat.scrollLeft=heat.scrollWidth;
+        }
+
+        function drawLovePeaks(peaks, max){
+            if(!peaksWrap || !peaksList) return;
+            if(!peaks || !peaks.length){ peaksWrap.hidden=true; return; }
+            peaksWrap.hidden=false;
+            peaksList.innerHTML='';
+            peaks.forEach(function(p){
+                var li=document.createElement('li');
+                li.className='peak';
+                var w=max?Math.max(8, Math.min(100, (p.love_total/max)*100)):0;
+                li.innerHTML='<span class="peak__date">'+formatLong(p.date)+'</span><span class="peak__bar"><i style="width:'+w+'%"></i></span><span class="dip__badge" style="background:rgba(255,61,129,.14); border-color:rgba(255,61,129,.22); color:var(--pink-soft)">'+p.love_total+' · пик</span>';
+                li.addEventListener('click', function(){ highlightLoveDate(p.date); });
+                peaksList.appendChild(li);
+            });
+        }
+
+        function highlightLoveDate(dateStr){
+            if(!currentData||!currentData.series) return;
+            var idx=-1;
+            for(var i=0;i<currentData.series.length;i++) if(currentData.series[i].date===dateStr){ idx=i; break; }
+            if(idx<0) return;
+            hoverIndex=idx;
+            drawLoveCanvas(currentData.series, currentData.moving_avg_7, currentData);
+            showLoveTip(idx);
+            try{ canvas.scrollIntoView({behavior:'smooth', block:'center'});}catch(e){}
+        }
+
+        function showLoveTip(idx){
+            if(!currentData||idx<0||!tip||!canvas) return;
+            var pt=currentData.series[idx];
+            var mv=currentData.moving_avg_7 && currentData.moving_avg_7[idx];
+            var plot=canvas._lovePlot;
+            if(!plot) return;
+            var x=plot.xFor(idx);
+            var rect=canvas.getBoundingClientRect();
+            var card=document.getElementById('loveCard');
+            var cardRect=card.getBoundingClientRect();
+            var tipX=rect.left-cardRect.left + x*(rect.width/plot.W);
+            var tipY=rect.top-cardRect.top + plot.yFor(pt.love_total)*(rect.height/plot.H);
+            tip.hidden=false;
+            tip.classList.remove('chart-tip--below');
+            tip.innerHTML='<b>'+formatLong(pt.date)+'</b> — '+pt.love_total+' '+plural(pt.love_total,'«люблю»','«люблю»','«люблю»')+'<br>я: '+pt.love_me+' · ты: '+pt.love_other+(mv?'<small>среднее 7д: '+mv.avg+'</small>':'');
+            tip.style.left=tipX+'px';
+            tip.style.top=(tipY-8)+'px';
+            tip.style.transform='translate(-50%, -110%)';
+            var tipW=tip.offsetWidth, tipH=tip.offsetHeight;
+            var cardW=cardRect.width;
+            var minX=tipW/2+8, maxX=cardW-tipW/2-8;
+            if(tipX<minX) tipX=minX;
+            if(tipX>maxX) tipX=maxX;
+            var needBelow=false;
+            var topEdge=tipY-tipH-14;
+            if(topEdge<8) needBelow=true;
+            if(needBelow){
+                tip.classList.add('chart-tip--below');
+                tip.style.transform='translate(-50%, 16px)';
+            } else {
+                tip.classList.remove('chart-tip--below');
+                tip.style.transform='translate(-50%, -110%)';
+            }
+            tip.style.left=tipX+'px';
+            tip.style.top=tipY+'px';
+        }
+        function hideLoveTip(){ if(tip){ tip.hidden=true; tip.classList.remove('chart-tip--below'); } hoverIndex=-1; if(currentData) drawLoveCanvas(currentData.series, currentData.moving_avg_7, currentData); }
+
+        if(canvas){
+            canvas.addEventListener('mousemove', function(e){
+                if(!currentData||!canvas._lovePlot) return;
+                var rect=canvas.getBoundingClientRect();
+                var plot=canvas._lovePlot;
+                var x=(e.clientX-rect.left)/rect.width*plot.W;
+                var rel=(x-plot.padL)/plot.plotW;
+                var idx=Math.round(rel*(plot.n-1));
+                if(idx<0) idx=0; if(idx>=plot.n) idx=plot.n-1;
+                if(idx!==hoverIndex){
+                    hoverIndex=idx;
+                    drawLoveCanvas(currentData.series, currentData.moving_avg_7, currentData);
+                    showLoveTip(idx);
+                }
+            });
+            canvas.addEventListener('mouseleave', hideLoveTip);
+            canvas.addEventListener('click', function(){ if(currentData&&hoverIndex>=0) showLoveTip(hoverIndex); });
+            canvas.addEventListener('touchstart', function(e){
+                var t=e.touches[0];
+                var rect=canvas.getBoundingClientRect();
+                var plot=canvas._lovePlot;
+                if(!plot) return;
+                var x=(t.clientX-rect.left)/rect.width*plot.W;
+                var rel=(x-plot.padL)/plot.plotW;
+                var idx=Math.round(rel*(plot.n-1));
+                if(idx<0) idx=0; if(idx>=plot.n) idx=plot.n-1;
+                hoverIndex=idx;
+                drawLoveCanvas(currentData.series, currentData.moving_avg_7, currentData);
+                showLoveTip(idx);
+            }, {passive:true});
+        }
+
+        // периоды
+        if(section) section.querySelectorAll('.period').forEach(function(btn){
+            btn.addEventListener('click', function(){
+                var days=parseInt(btn.dataset.days,10)||0;
+                fetchLove(days);
+            });
+        });
+        var ro=null;
+        try{
+            ro=new ResizeObserver(function(){ if(currentData) drawLoveCanvas(currentData.series, currentData.moving_avg_7, currentData); });
+            if(canvas) ro.observe(canvas);
+        }catch(e){
+            window.addEventListener('resize', function(){ if(currentData) drawLoveCanvas(currentData.series, currentData.moving_avg_7, currentData); });
+        }
+        // initial fetch — пробуем кэш
+        try{
+            var cached=localStorage.getItem('love_cache_30');
+            if(cached){ var c=JSON.parse(cached); if(c&&c.d&&c.d.series){ currentData=c.d; renderBoard(c.d); renderChart(c.d); if(statusEl) statusEl.textContent='кэш · обновляю…'; } }
+        }catch(e){}
+        fetchLove(30);
+        document.addEventListener('visibilitychange', function(){ if(document.visibilityState==='visible') fetchLove(currentDays); });
+        var refreshBtn=document.getElementById('loveRefresh');
+        if(refreshBtn) refreshBtn.addEventListener('click', function(){ fetchLove(currentDays); });
+        // также обновить hero если пришёл отдельный dating с /api/stats
+        // но love уже его отдаёт
+    }
+
+    /* ============================================================
        Кнопка от грусти
        ============================================================ */
     function mood() {
@@ -2697,7 +3342,7 @@ h1 { margin-bottom: 14px; }
         });
     }
 
-    function init() { hearts(); lightbox(); transitions(); stats(); talkDynamics(); mood(); }
+    function init() { hearts(); lightbox(); transitions(); stats(); talkDynamics(); loveDynamics(); mood(); }
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
     else init();

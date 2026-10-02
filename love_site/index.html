@@ -12,22 +12,23 @@
 
 <div class="bg" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 
-<!-- шаги — теперь всего 4 -->
+<!-- шаги — теперь 5 -->
 <nav class="steps" aria-label="Разделы">
     <a class="step" href="kompromat.html"><b>1</b><span>Воспоминания</span></a>
     <a class="step" href="page5.html"><b>2</b><span>Статистика</span></a>
-    <a class="step" href="page6.html"><b>3</b><span>Кнопка</span></a>
-    <a class="step" href="page4.html"><b>4</b><span>Письмо</span></a>
+    <a class="step" href="love.html"><b>3</b><span>Люблю</span></a>
+    <a class="step" href="page6.html"><b>4</b><span>Кнопка</span></a>
+    <a class="step" href="page4.html"><b>5</b><span>Письмо</span></a>
 </nav>
 
 <main class="card">
-    <span class="kicker">Главная · 4 входа</span>
+    <span class="kicker">Главная · 5 входов</span>
 
     <h1>Я собрал здесь <em>всё о нас</em></h1>
 
     <p class="lead">Это не просто сайт. Это мой способ сказать: я помню, я берегу, я выбираю тебя каждый день. Выбери, куда пойти — каждый вход ведёт в своё воспоминание о тебе.</p>
 
-    <div class="hub-grid" aria-label="Четыре раздела">
+    <div class="hub-grid" aria-label="Пять разделов">
         <a class="hub-card hub-card--accent" href="kompromat.html">
             <span class="hub-card__icon">💌</span>
             <span class="hub-card__title">Воспоминания <em>/ компромат</em></span>
@@ -40,6 +41,13 @@
             <span class="hub-card__title">Наша <em>статистика</em></span>
             <span class="hub-card__sub">График по дням: где сияло, а где была тишина. Подсказки, где мог согрешить.</span>
             <span class="hub-card__meta">график · динамика <i>→</i></span>
+        </a>
+
+        <a class="hub-card hub-card--accent" href="love.html" style="border-color: rgba(255,61,129,.28);">
+            <span class="hub-card__icon">❤️</span>
+            <span class="hub-card__title">Сколько <em>«люблю»</em></span>
+            <span class="hub-card__sub">Считаем каждое «люблю» и дни вместе с 13.09.2026 — кто сказал чаще и как по дням.</span>
+            <span class="hub-card__meta">дни вместе · график <i>→</i></span>
         </a>
 
         <a class="hub-card" href="page6.html">
@@ -58,7 +66,7 @@
     </div>
 
     <div class="edit-hint">
-        <b>Где менять 4 кнопки:</b> открой <code>index.html</code> → найди блок <code>hub-grid</code>. Каждая карточка — <code>&lt;a class="hub-card" href="..."&gt;</code>. Поменяй <code>href</code>, иконку в <code>hub-card__icon</code>, заголовок и подпись. Чтобы добавить 5-ю кнопку — скопируй один блок целиком.
+        <b>Где менять 5 кнопок:</b> открой <code>index.html</code> → найди блок <code>hub-grid</code>. Каждая карточка — <code>&lt;a class="hub-card" href="..."&gt;</code>. Поменяй <code>href</code>, иконку в <code>hub-card__icon</code>, заголовок и подпись. Чтобы добавить ещё — скопируй блок. Дату начала для «Люблю» меняют в <code>stats_service/app.py → DATING_START</code> или в Render → <code>DATING_START=2026-09-13</code>.
     </div>
 
     <div class="divider">❤</div>

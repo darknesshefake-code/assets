@@ -1076,7 +1076,56 @@ h1 em {
 }
 .hub-card--accent .hub-card__title { font-size: 22px; }
 
-/* воспоминания — секции внутри kompromat */
+/* люблю — герой с днями */
+.love-hero {
+    display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    padding: 22px 20px;
+    border-radius: 22px;
+    border: 1px solid rgba(255,61,129,.22);
+    background: linear-gradient(135deg, rgba(255,61,129,.14), rgba(160,107,255,.10) 60%, rgba(255,61,129,.06));
+    margin: 18px 0 20px;
+    position: relative; overflow: hidden;
+}
+.love-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(60% 80% at 85% 30%, rgba(255,61,129,.18), transparent 60%);
+    pointer-events: none;
+}
+.love-days { position: relative; z-index: 1; }
+.love-days__num {
+    display: block;
+    font-family: var(--serif);
+    font-size: clamp(38px, 7vw, 56px);
+    line-height: 1;
+    background: linear-gradient(100deg, var(--pink), var(--violet));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.love-days__label {
+    display: block; margin-top: 6px;
+    font-size: 14px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: #fff;
+}
+.love-days__sub {
+    display: block; margin-top: 6px;
+    font-size: 12.5px; color: var(--muted); line-height: 1.5;
+}
+.love-hero__heart {
+    position: relative; z-index: 1;
+    font-size: 54px; line-height: 1;
+    filter: drop-shadow(0 12px 24px rgba(255,61,129,.45));
+    animation: pulseHeart 2.2s ease-in-out infinite;
+}
+@keyframes pulseHeart {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+@media (max-width: 560px) {
+    .love-hero { flex-direction: column; text-align: center; }
+    .love-hero__heart { order: -1; }
+}
+
+/* вспоминания — секции внутри kompromat */
 .memory-block { margin: 26px 0 0; }
 .memory-block h2 {
     font-family: var(--serif);

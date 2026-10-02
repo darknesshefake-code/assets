@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07050d">
+<title>Сколько «люблю» мы сказали ❤️</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="bg" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+
+<!-- шаги — 5 разделов (люблю — отдельный) -->
+<nav class="steps" aria-label="Разделы">
+    <a class="step is-done" href="kompromat.html"><b>1</b><span>Воспоминания</span></a>
+    <a class="step is-done" href="page5.html"><b>2</b><span>Статистика</span></a>
+    <a class="step is-active" href="love.html"><b>3</b><span>Люблю</span></a>
+    <a class="step" href="page6.html"><b>4</b><span>Кнопка</span></a>
+    <a class="step" href="page4.html"><b>5</b><span>Письмо</span></a>
+</nav>
+
+<main class="card">
+    <span class="kicker">3 · Люблю — считаем каждое «люблю»</span>
+
+    <h1>Сколько <em>«люблю»</em> мы сказали</h1>
+
+    <p class="lead">Считаю только сообщения, где есть слово «люблю» — без разницы, с большой буквы или с сердечком рядом. Каждое — маленькое обещание. Здесь видно, кто говорил чаще, и как менялось это «люблю» по дням с <b>13.09.2026</b> — дня, когда мы стали «мы».</p>
+
+    <!-- Дни вместе -->
+    <div class="love-hero" id="loveHero">
+        <div class="love-days">
+            <span class="love-days__num" id="loveDaysNum"><span class="skeleton" style="width:80px;height:48px"></span></span>
+            <span class="love-days__label" id="loveDaysLabel">дней вместе</span>
+            <span class="love-days__sub" id="loveDaysSub">с 13.09.2026 · <span id="loveDaysWeeks">—</span> недель</span>
+        </div>
+        <div class="love-hero__heart">❤️</div>
+    </div>
+
+    <!-- Доска люблю -->
+    <div class="board" id="loveBoard" data-state="loading">
+        <div class="board__head">
+            <span class="board__who" id="loveWho">Мы и наше «люблю» 💌</span>
+            <span class="board__when" id="loveUpdated">считаю…</span>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat stat--me">
+                <span class="stat__label">Я сказал «люблю»</span>
+                <span class="stat__value" id="loveMe"><span class="skeleton"></span></span>
+                <span class="stat__sub" id="loveMeSub">— % от всех «люблю»</span>
+                <div class="bar"><i id="loveBarMe"></i></div>
+            </div>
+
+            <div class="stat stat--her">
+                <span class="stat__label">Ты сказала «люблю»</span>
+                <span class="stat__value" id="loveOther"><span class="skeleton"></span></span>
+                <span class="stat__sub" id="loveOtherSub">— % от всех «люблю»</span>
+                <div class="bar"><i id="loveBarOther"></i></div>
+            </div>
+        </div>
+
+        <div class="board__foot">
+            <span class="verdict" id="loveVerdict">смотрю, кто чаще…</span>
+            <span class="hint">Всего <b id="loveTotal">—</b> «люблю» · в среднем <b id="loveAvg">—</b> в день · <span id="loveTopDay"></span></span>
+        </div>
+
+        <div class="board__foot">
+            <button class="btn" type="button" id="loveRefresh">Обновить ↻</button>
+            <span class="hint">Считаются сообщения, где есть «люблю» (люблю, Люблю, ЛЮБЛЮ — без разницы). Фото с подписью тоже считаются, если в подписи было «люблю».</span>
+        </div>
+    </div>
+
+    <!-- График люблю по дням -->
+    <section class="chart-section" id="loveSection" aria-label="График люблю по дням">
+        <div class="chart-head">
+            <h2>Как мы говорили <em>«люблю»</em> по дням</h2>
+            <p class="chart-sub">Каждая точка — день. Тёмно-розовые пики — дни, когда «люблю» звучало особенно часто. Пунктир — среднее за 7 дней.</p>
+            <div class="periods" role="tablist" aria-label="Период">
+                <button type="button" class="period is-active" data-days="30" data-love="1" role="tab" aria-selected="true">30 дней</button>
+                <button type="button" class="period" data-days="90" data-love="1" role="tab" aria-selected="false">90 дней</button>
+                <button type="button" class="period" data-days="180" data-love="1" role="tab" aria-selected="false">180 дней</button>
+                <button type="button" class="period" data-days="0" data-love="1" role="tab" aria-selected="false">Всё время</button>
+            </div>
+        </div>
+
+        <div class="chart-card" id="loveCard">
+            <canvas id="loveChart" width="860" height="340" aria-label="График люблю по дням" role="img"></canvas>
+            <div class="chart-tip" id="loveTip" hidden></div>
+            <div class="chart-empty" id="loveEmpty" hidden>
+                <span class="chart-empty__icon">💌</span>
+                <b>Пока нет «люблю» за период</b>
+                <span>Может, в эти дни писали иначе? Попробуй «Всё время» или подожди — сервер досчитывает историю.</span>
+            </div>
+            <div class="chart-status" id="loveStatus">загружаю динамику…</div>
+        </div>
+
+        <div class="chart-legend" aria-hidden="true">
+            <span><i class="dot dot--total"></i> Всего «люблю» в день</span>
+            <span><i class="dot dot--me"></i> Я</span>
+            <span><i class="dot dot--her"></i> Ты</span>
+            <span><i class="dot dot--avg"></i> Среднее 7д</span>
+        </div>
+
+        <div class="heatmap-wrap">
+            <div class="heatmap-head">
+                <span>Карта «люблю» <span class="hint">— ярче, где чаще говорили</span></span>
+                <span class="heatmap-scale"><i></i><i></i><i></i><i></i><i></i> <span>меньше → больше</span></span>
+            </div>
+            <div class="heatmap" id="loveHeatmap"></div>
+        </div>
+
+        <div class="peaks-wrap" id="lovePeaksWrap" hidden>
+            <h3>✨ Пики «люблю» — самые тёплые дни</h3>
+            <ul class="peaks" id="lovePeaksList"></ul>
+        </div>
+
+        <p class="chart-footnote" id="loveFootnote"></p>
+    </section>
+
+    <div class="edit-hint">
+        <b>Где менять дату начала:</b> открой <code>stats_service/app.py</code> → переменная <code>DATING_START = date(2026,9,13)</code> или задай в Render → Environment → <code>DATING_START=2026-09-13</code>. На странице дата берётся из ответа <code>/api/love</code> → поле <code>dating.start</code> — менять только там, фронт пересчитает «дней вместе» сам.
+        <br><b>Где меняется слово:</b> в том же файле константа <code>LOVE_WORD = "люблю"</code> — можно поставить «love» или другое.
+    </div>
+
+    <details class="tech">
+        <summary>Как считается «люблю»?</summary>
+        <p>Сервис читает только наш диалог (как и для статистики) и проверяет <code>text.lower().contains("люблю")</code>. Считается сообщение, а не количество слов в нём (одно сообщение с двумя «люблю» — это 1). Фото/видео с подписью тоже попадают, если в подписи было «люблю». Регистр не важен.</p>
+        <ul>
+            <li>дата начала — <code>13.09.2026</code> (можно переопределить переменной <code>DATING_START</code>);</li>
+            <li>«дней вместе» = сегодня − 13.09.2026 + 1 (13.09 = день 1);</li>
+            <li>API: <code>GET /api/love?days=30|90|180|0</code> отдаёт <code>totals</code>, <code>series</code>, <code>moving_avg_7</code>, <code>peaks</code>, <code>dating</code>;</li>
+            <li>демо-данные генерит, когда Telegram ещё не подключен.</li>
+        </ul>
+    </details>
+
+    <nav class="nav" aria-label="Переход между разделами">
+        <a class="btn btn--back" href="page5.html"><i>←</i> Статистика</a>
+        <span class="counter">3 / 5</span>
+        <a class="btn btn--primary" href="page6.html">Дальше: кнопка <i>→</i></a>
+    </nav>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
