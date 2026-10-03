@@ -12,23 +12,24 @@
 
 <div class="bg" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 
-<!-- шаги — теперь 5 -->
+<!-- шаги — теперь 6 (тайная галактика) -->
 <nav class="steps" aria-label="Разделы">
     <a class="step" href="kompromat.html"><b>1</b><span>Воспоминания</span></a>
     <a class="step" href="page5.html"><b>2</b><span>Статистика</span></a>
     <a class="step" href="love.html"><b>3</b><span>Люблю</span></a>
     <a class="step" href="page6.html"><b>4</b><span>Кнопка</span></a>
     <a class="step" href="page4.html"><b>5</b><span>Письмо</span></a>
+    <a class="step" href="secret.html"><b>6</b><span>Тайное</span></a>
 </nav>
 
 <main class="card">
-    <span class="kicker">Главная · 5 входов</span>
+    <span class="kicker">Главная · 6 входов</span>
 
     <h1>Я собрал здесь <em>всё о нас</em></h1>
 
     <p class="lead">Это не просто сайт. Это мой способ сказать: я помню, я берегу, я выбираю тебя каждый день. Выбери, куда пойти — каждый вход ведёт в своё воспоминание о тебе.</p>
 
-    <div class="hub-grid" aria-label="Пять разделов">
+    <div class="hub-grid" aria-label="Шесть разделов">
         <a class="hub-card hub-card--accent" href="kompromat.html">
             <span class="hub-card__icon">💌</span>
             <span class="hub-card__title">Воспоминания <em>/ компромат</em></span>
@@ -63,10 +64,17 @@
             <span class="hub-card__sub">3 письма, которые листаются как книга — влево/вправо, с фото и подписью в конце.</span>
             <span class="hub-card__meta">3 страницы · листай <i>→</i></span>
         </a>
+
+        <a class="hub-card hub-card--accent" href="secret.html" style="border-color: rgba(94,231,255,.22); background: linear-gradient(145deg, rgba(94,231,255,.10), rgba(160,107,255,.09) 60%, rgba(255,61,129,.06));">
+            <span class="hub-card__icon">✨</span>
+            <span class="hub-card__title">Тайная <em>галактика</em></span>
+            <span class="hub-card__sub">Вращай галактику из «я тебя люблю» — найди ракурс где хаос становится нашим фото. С кнопкой «собрать».</span>
+            <span class="hub-card__meta">secret.png · 3D <i>→</i></span>
+        </a>
     </div>
 
     <div class="edit-hint">
-        <b>Где менять 5 кнопок:</b> открой <code>index.html</code> → найди блок <code>hub-grid</code>. Каждая карточка — <code>&lt;a class="hub-card" href="..."&gt;</code>. Поменяй <code>href</code>, иконку в <code>hub-card__icon</code>, заголовок и подпись. Чтобы добавить ещё — скопируй блок. Дату начала для «Люблю» меняют в <code>stats_service/app.py → DATING_START</code> или в Render → <code>DATING_START=2026-09-13</code>.
+        <b>Где менять 6 кнопок:</b> открой <code>index.html</code> → найди блок <code>hub-grid</code>. Каждая карточка — <code>&lt;a class="hub-card" href="..."&gt;</code>. Поменяй <code>href</code>, иконку в <code>hub-card__icon</code>, заголовок и подпись. Чтобы добавить ещё — скопируй блок. Дату начала для «Люблю» меняют в <code>stats_service/app.py → DATING_START</code> или в Render → <code>DATING_START=2026-09-13</code>. Фото для галактики — <code>love_site/secret.png</code> (замени на своё, квадрат лучше, ~1200px).
     </div>
 
     <div class="divider">❤</div>

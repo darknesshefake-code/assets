@@ -6,6 +6,8 @@
 <meta name="theme-color" content="#07050d">
 <title>Для тебя ❤️</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+@@IMPORTMAP@@
 <style>
 /* ============================================================
    Для тебя ❤️ — общий стиль сайта
@@ -1218,18 +1220,19 @@ h1 { margin-bottom: 14px; }
         <a class="step" href="#p6"><b>6</b><span>Письмо 1</span></a>
         <a class="step" href="#p7"><b>7</b><span>Письмо 2</span></a>
         <a class="step" href="#p8"><b>8</b><span>Письмо 3</span></a>
+        <a class="step" href="#p9"><b>9</b><span>Тайное</span></a>
 </nav>
 
 <div class="deck">
         <section class="page is-active" id="p1" aria-label="Главная">
             <div class="card">
-    <span class="kicker">Главная · 5 входов</span>
+    <span class="kicker">Главная · 6 входов</span>
 
     <h1>Я собрал здесь <em>всё о нас</em></h1>
 
     <p class="lead">Это не просто сайт. Это мой способ сказать: я помню, я берегу, я выбираю тебя каждый день. Выбери, куда пойти — каждый вход ведёт в своё воспоминание о тебе.</p>
 
-    <div class="hub-grid" aria-label="Пять разделов">
+    <div class="hub-grid" aria-label="Шесть разделов">
         <a class="hub-card hub-card--accent" href="#p2">
             <span class="hub-card__icon">💌</span>
             <span class="hub-card__title">Воспоминания <em>/ компромат</em></span>
@@ -1264,10 +1267,17 @@ h1 { margin-bottom: 14px; }
             <span class="hub-card__sub">3 письма, которые листаются как книга — влево/вправо, с фото и подписью в конце.</span>
             <span class="hub-card__meta">3 страницы · листай <i>→</i></span>
         </a>
+
+        <a class="hub-card hub-card--accent" href="#p9" style="border-color: rgba(94,231,255,.22); background: linear-gradient(145deg, rgba(94,231,255,.10), rgba(160,107,255,.09) 60%, rgba(255,61,129,.06));">
+            <span class="hub-card__icon">✨</span>
+            <span class="hub-card__title">Тайная <em>галактика</em></span>
+            <span class="hub-card__sub">Вращай галактику из «я тебя люблю» — найди ракурс где хаос становится нашим фото. С кнопкой «собрать».</span>
+            <span class="hub-card__meta">secret.png · 3D <i>→</i></span>
+        </a>
     </div>
 
     <div class="edit-hint">
-        <b>Где менять 5 кнопок:</b> открой <code>index.html</code> → найди блок <code>hub-grid</code>. Каждая карточка — <code>&lt;a class="hub-card" href="..."&gt;</code>. Поменяй <code>href</code>, иконку в <code>hub-card__icon</code>, заголовок и подпись. Чтобы добавить ещё — скопируй блок. Дату начала для «Люблю» меняют в <code>stats_service/app.py → DATING_START</code> или в Render → <code>DATING_START=2026-09-13</code>.
+        <b>Где менять 6 кнопок:</b> открой <code>index.html</code> → найди блок <code>hub-grid</code>. Каждая карточка — <code>&lt;a class="hub-card" href="..."&gt;</code>. Поменяй <code>href</code>, иконку в <code>hub-card__icon</code>, заголовок и подпись. Чтобы добавить ещё — скопируй блок. Дату начала для «Люблю» меняют в <code>stats_service/app.py → DATING_START</code> или в Render → <code>DATING_START=2026-09-13</code>. Фото для галактики — <code>love_site/secret.png</code> (замени на своё, квадрат лучше, ~1200px).
     </div>
 
     <div class="divider">❤</div>
@@ -1281,7 +1291,7 @@ h1 { margin-bottom: 14px; }
         </section>
         <section class="page" id="p2" aria-label="Воспоминания">
             <div class="card">
-    <span class="kicker">1 · Воспоминания — компромат, который греет</span>
+    <span class="kicker">1 · Воспоминания — твой компромат · 1 / 6</span>
 
     <h1>Всё, что я <em>не забуду</em></h1>
 
@@ -1404,14 +1414,14 @@ h1 { margin-bottom: 14px; }
 
     <nav class="nav" aria-label="Переход между разделами">
         <a class="btn btn--back" href="#p1"><i>←</i> На главную</a>
-        <span class="counter">1 / 5</span>
+        <span class="counter">1 / 6</span>
         <a class="btn btn--primary" href="#p3">Дальше: статистика <i>→</i></a>
     </nav>
 </div>
         </section>
         <section class="page" id="p3" aria-label="Статистика">
             <div class="card">
-    <span class="kicker">2 · Статистика</span>
+    <span class="kicker">2 · Статистика — наша динамика · 2 / 6</span>
 
     <h1>Наша переписка <em>в цифрах</em></h1>
 
@@ -1647,7 +1657,7 @@ h1 { margin-bottom: 14px; }
 
     <nav class="nav" aria-label="Переход между разделами">
         <a class="btn btn--back" href="#p3"><i>←</i> Статистика</a>
-        <span class="counter">3 / 5</span>
+        <span class="counter">3 / 6</span>
         <a class="btn btn--primary" href="#p5">Дальше: кнопка <i>→</i></a>
     </nav>
 </div>
@@ -1698,14 +1708,14 @@ h1 { margin-bottom: 14px; }
 
     <nav class="nav" aria-label="Переход между страницами">
         <a class="btn btn--back" href="#p3"><i>←</i> Статистика</a>
-        <span class="counter">4 / 5</span>
+        <span class="counter">4 / 6</span>
         <a class="btn btn--primary" href="#p6">Читать письмо 1 <i>→</i></a>
     </nav>
 </div>
         </section>
         <section class="page" id="p6" aria-label="Письмо 1">
             <div class="card">
-    <span class="kicker">5 · Письмо — 1 из 3</span>
+    <span class="kicker">5 · Письмо — для тебя</span>
 
     <h1>Всё, что я хочу тебе <em>сказать</em></h1>
 
@@ -1770,7 +1780,7 @@ h1 { margin-bottom: 14px; }
         </section>
         <section class="page" id="p7" aria-label="Письмо 2">
             <div class="card">
-    <span class="kicker">5 · Письмо — 2 из 3</span>
+    <span class="kicker">5 · Письмо — для тебя</span>
 
     <h1>Как ты <em>делаешь меня</em> лучше</h1>
 
@@ -1821,7 +1831,7 @@ h1 { margin-bottom: 14px; }
         </section>
         <section class="page" id="p8" aria-label="Письмо 3">
             <div class="card">
-    <span class="kicker">5 · Письмо — 3 из 3</span>
+    <span class="kicker">5 · Письмо — для тебя</span>
 
     <h1>Моё будущее — <em>это ты</em></h1>
 
@@ -1869,6 +1879,47 @@ h1 { margin-bottom: 14px; }
     </nav>
 
     <div class="sig-line">конец писем — начало нас ❤️</div>
+</div>
+        </section>
+        <section class="page" id="p9" aria-label="Тайное">
+            <div class="card">
+    <span class="kicker">6 · Тайное — среди звёзд только мы</span>
+    <h1>найди нас <em>среди звёзд</em></h1>
+    <p class="lead">Это не просто фото. Это галактика из тысячи «я тебя люблю». Вращай её, приближай колёсиком — и в один момент хаос соберётся в нас. Не видишь? Жми ✨ — я подскажу ракурс.</p>
+
+    <div class="galaxy-wrap" id="galaxyWrap">
+        <canvas id="galaxy" aria-label="Галактика из я тебя люблю — вращай чтобы собрать фото"></canvas>
+        <div class="galaxy-hud">
+            <div class="galaxy-hint" id="hint">потяни, чтобы вращать • колесо / щипок — масштаб • зажми Shift и тяни для панорамы</div>
+            <div class="galaxy-progress" id="progress"><span id="progressText">собираю галактику…</span><i id="progressBar"></i></div>
+            <div class="galaxy-bar">
+                <button class="btn btn--primary" type="button" id="assembleBtn">✨ собрать картинку</button>
+                <button class="btn" type="button" id="spinBtn" title="включить медленное вращение">⟡ вращать</button>
+                <button class="btn" type="button" id="shuffleBtn" title="разбросать заново">↻ рассеять</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="secret-foot">
+        <span>💡 Подсказка: ищи ракурс прямо спереди — там, где звёзды становятся чёткими буквами. На телефоне — двумя пальцами.</span>
+        <span id="alignState" style="color: rgba(255,255,255,.5); font-size: 12px;"></span>
+    </div>
+
+    <p class="footnote" style="margin-top:18px; color: var(--muted); font-size:13px; line-height:1.7;">
+        Каждая точка — это «я тебя люблю», окрашенная в цвет исходного фото <code>secret.png</code>. При фронтальном взгляде они складываются в картинку, под углом — снова становятся галактикой.
+        <br><span style="color: rgba(255,255,255,.38);">Замени файл <code>secret.png</code> в папке <code>love_site/</code> на своё фото (квадрат лучше) — галактика пересоберётся автоматически. Пересожми через <code>build_one_file.py</code> если делаешь однофайловую версию.</span>
+    </p>
+
+    <details class="tech">
+        <summary>Как это работает технически?</summary>
+        <p>Берём <code>secret.png</code>, уменьшаем до ~110×85, каждый пиксель → одна частица. Частица имеет два положения: <b>галактика</b> (случайное 3D облако радиусом ~22) и <b>картинка</b> (плоскость XY размером 30, цвета — из фото). Каждый кадр считаем <code>alignment = |dot( cameraDir, planeNormal )|</code>. Если <code>alignment &gt; 0.94</code> — частицы плавно летят к картинке, иначе — к галактике. Кнопка «собрать» анимирует камеру в точку <code>(0, 3, 28)</code> — ровно спереди. Фон — 3000 звёзд-спираль + туманность.</p>
+    </details>
+
+    <nav class="nav" aria-label="Навигация">
+        <a class="btn btn--back" href="#p1"><i>←</i> На главную</a>
+        <span class="counter">тайное · 6 / 6</span>
+        <a class="btn" href="#p6">к письмам <i>→</i></a>
+    </nav>
 </div>
         </section>
 </div>
@@ -3402,5 +3453,6 @@ h1 { margin-bottom: 14px; }
     })();
 
 </script>
+@@EXTRA@@
 </body>
 </html>

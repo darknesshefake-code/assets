@@ -14,19 +14,24 @@
 
 <!-- шаги — 4 раздела -->
 <nav class="steps" aria-label="Разделы">
-    <a class="step is-active" href="kompromat.html"><b>1</b><span>Воспоминания</span></a>
+    <a class="step is-active" href="kompromat.html" aria-current="page"><b>1</b><span>Воспоминания</span></a>
     <a class="step" href="page5.html"><b>2</b><span>Статистика</span></a>
     <a class="step" href="love.html"><b>3</b><span>Люблю</span></a>
     <a class="step" href="page6.html"><b>4</b><span>Кнопка</span></a>
     <a class="step" href="page4.html"><b>5</b><span>Письмо</span></a>
+    <a class="step" href="secret.html"><b>6</b><span>Тайное</span></a>
 </nav>
 
 <main class="card">
-    <span class="kicker">1 · Воспоминания — компромат, который греет</span>
+    <span class="kicker">1 · Воспоминания — твой компромат · 1 / 6</span>
 
     <h1>Всё, что я <em>не забуду</em></h1>
 
     <p class="lead">Собрал здесь твой компромат — не для шантажа, а чтобы помнить каждую мелочь: подарки, в которых ты меня слышишь, укусы, после которых хочется улыбаться, и глаза, в которых я впервые понял, что значит «меня выбрали».</p>
+
+    <div class="edit-hint">
+        <b>Где менять фото:</b> открой <code>kompromat.html</code> — внутри три блока <code>memory-block</code> (подарки / укусы / глаза). Чтобы добавить фото, скопируй один <code>&lt;figure class="shot"&gt;…&lt;/figure&gt;</code> и поменяй <code>src</code> и <code>data-full</code> на свой файл в <code>img/</code>.
+    </div>
 
     <!-- Подарки -->
     <section class="memory-block" id="gifts">
@@ -141,7 +146,7 @@
 
     <nav class="nav" aria-label="Переход между разделами">
         <a class="btn btn--back" href="index.html"><i>←</i> На главную</a>
-        <span class="counter">1 / 5</span>
+        <span class="counter">1 / 6</span>
         <a class="btn btn--primary" href="page5.html">Дальше: статистика <i>→</i></a>
     </nav>
 </main>
