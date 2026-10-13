@@ -12,20 +12,24 @@
 
 <div class="bg" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 
-<!-- шаги -->
-<nav class="steps" aria-label="Разделы">
-    <a class="step is-done" href="index.html"><b>1</b><span>Подарки</span></a>
-    <a class="step is-done" href="page2.html"><b>2</b><span>Укусы</span></a>
-    <a class="step is-active" href="page3.html" aria-current="page"><b>3</b><span>Глаза</span></a>
-    <a class="step" href="page5.html"><b>4</b><span>Статистика</span></a>
-    <a class="step" href="page6.html"><b>5</b><span>Кнопка</span></a>
-    <a class="step" href="page4.html"><b>6</b><span>Письмо</span></a>
+<!-- шаги — 4 раздела (эта страница — часть воспоминаний) -->
+<nav class="side-nav" aria-label="Навигация">
+  <a class="side-btn" href="index.html" data-tip="Главная"><span>🏠</span></a>
+  <a class="side-btn is-active" href="kompromat.html" data-tip="Воспоминания" aria-current="page"><span>💌</span></a>
+  <a class="side-btn" href="page5.html" data-tip="Статистика"><span>📊</span></a>
+  <a class="side-btn" href="love.html" data-tip="Люблю"><span>❤️</span></a>
+  <a class="side-btn" href="page6.html" data-tip="Кнопка"><span>💖</span></a>
+  <a class="side-btn" href="page4.html" data-tip="Письма"><span>✉️</span></a>
+  <a class="side-btn" href="secret.html" data-tip="Тайное"><span>✨</span></a>
+  <a class="side-btn" href="chat.html" data-tip="Чат"><span>💬</span></a>
 </nav>
+<div class="online-pill" id="onlinePill"><span class="online-dot"></span><span id="onlineCount">— онлайн</span><span id="onlineUser" class="online-user"></span></div>
 
 <main class="card">
-    <span class="kicker">Часть 3 · Глаза</span>
+    <span class="kicker">1 · Глаза — твои  · 1 / 6</span>
 
     <h1>Я никогда не забуду твои <em>влюблённые глаза</em>, которые горели</h1>
+    <p class="lead" style="margin-bottom:12px;color:var(--muted);font-size:13px">Старая отдельная страница — теперь всё в <a href="kompromat.html" style="color:var(--pink-soft)">kompromat.html</a>. Оставил для совместимости.</p>
 
     <p class="lead">В них было видно всё: и «я выбрала тебя», и «я никуда не уйду». Этот свет я вижу даже сейчас, когда закрываю глаза.</p>
 
@@ -45,12 +49,25 @@
     </div>
 
     <nav class="nav" aria-label="Переход между страницами">
-        <a class="btn btn--back" href="page2.html"><i>←</i> Назад</a>
-        <span class="counter">3 / 6</span>
+        <a class="btn btn--back" href="kompromat.html"><i>←</i> Все воспоминания</a>
+        <span class="counter">глаза · 3 фото</span>
         <a class="btn btn--primary" href="page5.html">Дальше: статистика <i>→</i></a>
     </nav>
 </main>
 
 <script src="script.js"></script>
+
+<!-- auth modal -->
+<div class="auth-overlay" id="authOverlay" hidden>
+  <div class="auth-card">
+    <h2>Привет, кто ты? ✨</h2>
+    <p>Введи ник и пароль — в следующий раз зайдёшь по ним и увидишь все послания.</p>
+    <div class="auth-field"><label>Никнейм</label><input id="authNick" placeholder="например, Егор" maxlength="24"></div>
+    <div class="auth-field"><label>Пароль</label><input id="authPass" type="password" placeholder="••••••••"></div>
+    <div class="auth-actions"><button class="btn btn--primary" id="authSubmit">Войти</button></div>
+    <div class="hint" id="authHint"></div>
+  </div>
+</div>
+
 </body>
 </html>

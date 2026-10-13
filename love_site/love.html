@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07050d">
+<title>Сколько «люблю» мы сказали ❤️</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="bg" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+
+<!-- шаги — 5 разделов (люблю — отдельный) -->
+<nav class="side-nav" aria-label="Навигация">
+  <a class="side-btn" href="index.html" data-tip="Главная"><span>🏠</span></a>
+  <a class="side-btn" href="kompromat.html" data-tip="Воспоминания"><span>💌</span></a>
+  <a class="side-btn" href="page5.html" data-tip="Статистика"><span>📊</span></a>
+  <a class="side-btn is-active" href="love.html" data-tip="Люблю" aria-current="page"><span>❤️</span></a>
+  <a class="side-btn" href="page6.html" data-tip="Кнопка"><span>💖</span></a>
+  <a class="side-btn" href="page4.html" data-tip="Письма"><span>✉️</span></a>
+  <a class="side-btn" href="secret.html" data-tip="Тайное"><span>✨</span></a>
+  <a class="side-btn" href="chat.html" data-tip="Чат"><span>💬</span></a>
+</nav>
+<div class="online-pill" id="onlinePill"><span class="online-dot"></span><span id="onlineCount">— онлайн</span><span id="onlineUser" class="online-user"></span></div>
+
+<main class="card">
+    <span class="kicker">3 · Люблю — считаем каждое «люблю»</span>
+
+    <h1>Сколько <em>«люблю»</em> мы сказали</h1>
+
+    <p class="lead">Считаю только сообщения, где есть слово «люблю» — без разницы, с большой буквы или с сердечком рядом. Каждое — маленькое обещание. Здесь видно, кто говорил чаще, и как менялось это «люблю» по дням с <b>13.09.2026</b> — дня, когда мы стали «мы».</p>
+
+    <!-- Дни вместе -->
+    <div class="love-hero" id="loveHero">
+        <div class="love-days">
+            <span class="love-days__num" id="loveDaysNum"><span class="skeleton" style="width:80px;height:48px"></span></span>
+            <span class="love-days__label" id="loveDaysLabel">дней вместе</span>
+            <span class="love-days__sub" id="loveDaysSub">с 13.09.2026 · <span id="loveDaysWeeks">—</span> недель</span>
+        </div>
+        <div class="love-hero__heart">❤️</div>
+    </div>
+
+    <!-- Доска люблю -->
+    <div class="board" id="loveBoard" data-state="loading">
+        <div class="board__head">
+            <span class="board__who" id="loveWho">Мы и наше «люблю» 💌</span>
+            <span class="board__when" id="loveUpdated">считаю…</span>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat stat--me">
+                <span class="stat__label">Я сказал «люблю»</span>
+                <span class="stat__value" id="loveMe"><span class="skeleton"></span></span>
+                <span class="stat__sub" id="loveMeSub">— % от всех «люблю»</span>
+                <div class="bar"><i id="loveBarMe"></i></div>
+            </div>
+
+            <div class="stat stat--her">
+                <span class="stat__label">Ты сказала «люблю»</span>
+                <span class="stat__value" id="loveOther"><span class="skeleton"></span></span>
+                <span class="stat__sub" id="loveOtherSub">— % от всех «люблю»</span>
+                <div class="bar"><i id="loveBarOther"></i></div>
+            </div>
+        </div>
+
+        <div class="board__foot">
+            <span class="verdict" id="loveVerdict">смотрю, кто чаще…</span>
+            <span class="hint">Всего <b id="loveTotal">—</b> «люблю» · в среднем <b id="loveAvg">—</b> в день · <span id="loveTopDay"></span></span>
+        </div>
+
+        <div class="board__foot">
+            <button class="btn" type="button" id="loveRefresh">Обновить ↻</button>
+            <span class="hint">Считаются сообщения, где есть «люблю» (люблю, Люблю, ЛЮБЛЮ — без разницы). Фото с подписью тоже считаются, если в подписи было «люблю».</span>
+        </div>
+    </div>
+
+    <!-- График люблю по дням -->
+    <section class="chart-section" id="loveSection" aria-label="График люблю по дням">
+        <div class="chart-head">
+            <h2>Как мы говорили <em>«люблю»</em> по дням</h2>
+            <p class="chart-sub">Каждая точка — день. Тёмно-розовые пики — дни, когда «люблю» звучало особенно часто. Пунктир — среднее за 7 дней.</p>
+            <div class="periods" role="tablist" aria-label="Период">
+                <button type="button" class="period is-active" data-days="30" data-love="1" role="tab" aria-selected="true">30 дней</button>
+                <button type="button" class="period" data-days="90" data-love="1" role="tab" aria-selected="false">90 дней</button>
+                <button type="button" class="period" data-days="180" data-love="1" role="tab" aria-selected="false">180 дней</button>
+                <button type="button" class="period" data-days="0" data-love="1" role="tab" aria-selected="false">Всё время</button>
+            </div>
+        </div>
+
+        <div class="chart-card" id="loveCard">
+            <canvas id="loveChart" width="860" height="340" aria-label="График люблю по дням" role="img"></canvas>
+            <div class="chart-tip" id="loveTip" hidden></div>
+            <div class="chart-empty" id="loveEmpty" hidden>
+                <span class="chart-empty__icon">💌</span>
+                <b>Пока нет «люблю» за период</b>
+                <span>Может, в эти дни писали иначе? Попробуй «Всё время» или подожди — сервер досчитывает историю.</span>
+            </div>
+            <div class="chart-status" id="loveStatus">загружаю динамику…</div>
+        </div>
+
+        <div class="chart-legend" aria-hidden="true">
+            <span><i class="dot dot--total"></i> Всего «люблю» в день</span>
+            <span><i class="dot dot--me"></i> Я</span>
+            <span><i class="dot dot--her"></i> Ты</span>
+            <span><i class="dot dot--avg"></i> Среднее 7д</span>
+        </div>
+
+        <div class="heatmap-wrap">
+            <div class="heatmap-head">
+                <span>Карта «люблю» <span class="hint">— ярче, где чаще говорили</span></span>
+                <span class="heatmap-scale"><i></i><i></i><i></i><i></i><i></i> <span>меньше → больше</span></span>
+            </div>
+            <div class="heatmap" id="loveHeatmap"></div>
+        </div>
+
+        <div class="peaks-wrap" id="lovePeaksWrap" hidden>
+            <h3>✨ Пики «люблю» — самые тёплые дни</h3>
+            <ul class="peaks" id="lovePeaksList"></ul>
+        </div>
+
+        <p class="chart-footnote" id="loveFootnote"></p>
+    </section>
+
+    
+
+    
+
+    <nav class="nav" aria-label="Переход между разделами">
+        <a class="btn btn--back" href="page5.html"><i>←</i> Статистика</a>
+        <span class="counter">3 / 6</span>
+        <a class="btn btn--primary" href="page6.html">Дальше: кнопка <i>→</i></a>
+    </nav>
+</main>
+
+<script src="script.js"></script>
+
+<!-- auth modal -->
+<div class="auth-overlay" id="authOverlay" hidden>
+  <div class="auth-card">
+    <h2>Привет, кто ты? ✨</h2>
+    <p>Введи ник и пароль — в следующий раз зайдёшь по ним и увидишь все послания.</p>
+    <div class="auth-field"><label>Никнейм</label><input id="authNick" placeholder="например, Егор" maxlength="24"></div>
+    <div class="auth-field"><label>Пароль</label><input id="authPass" type="password" placeholder="••••••••"></div>
+    <div class="auth-actions"><button class="btn btn--primary" id="authSubmit">Войти</button></div>
+    <div class="hint" id="authHint"></div>
+  </div>
+</div>
+
+</body>
+</html>

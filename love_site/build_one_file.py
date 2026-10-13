@@ -1,8 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Собирает одностраничную версию сайта: все 6 разделов в одном HTML-файле,
+Собирает одностраничную версию сайта: все разделы в одном HTML-файле,
 CSS и JS внутри, фотографии — data-URI. Результат: love_site_one_file.html
+
+Структура сейчас — 7 входов + 4 письма (всего 11 секций):
+  1 Главная (хаб)  -> index.html
+  2 Воспоминания -> kompromat.html
+  3 Статистика -> page5.html
+  4 Люблю -> love.html
+  5 Кнопка -> page6.html
+  6 Письмо 1 -> page4.html
+  7 Письмо 2 -> page7.html
+  8 Письмо 3 -> page8.html
+  9 Письмо 4 (новое) -> page10.html
+  10 Тайное (галактика) -> secret.html
+  11 Чат -> chat.html
+Старые page2.html / page3.html оставлены для совместимости, но в однофайловую
+не включаем — их фото уже внутри kompromat.html.
 """
 import base64, io, os, re, sys
 from PIL import Image, ImageOps
@@ -10,10 +25,25 @@ from PIL import Image, ImageOps
 SRC = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(SRC, 'love_site_one_file.html')
 
-PAGES = ['index.html', 'page2.html', 'page3.html', 'page5.html', 'page6.html', 'page4.html']
-MAP = {'index.html': '#p1', 'page2.html': '#p2', 'page3.html': '#p3',
-       'page5.html': '#p4', 'page6.html': '#p5', 'page4.html': '#p6'}
-STEP_LABELS = ['Подарки', 'Укусы', 'Глаза', 'Статистика', 'Кнопка', 'Письмо']
+PAGES = ['index.html', 'kompromat.html', 'page5.html', 'love.html', 'page6.html', 'page4.html', 'page7.html', 'page8.html', 'page10.html', 'secret.html', 'chat.html']
+MAP = {
+    'index.html': '#p1',
+    'kompromat.html': '#p2',
+    'page5.html': '#p3',
+    'love.html': '#p4',
+    'page9.html': '#p4',
+    'page6.html': '#p5',
+    'page4.html': '#p6',
+    'page7.html': '#p7',
+    'page8.html': '#p8',
+    'page10.html': '#p9',
+    'secret.html': '#p10',
+    'chat.html': '#p11',
+    # старые подарки/укусы/глаза тоже мапим на компромат для совместимости
+    'page2.html': '#p2',
+    'page3.html': '#p2',
+}
+STEP_LABELS = ['Главная', 'Воспоминания', 'Статистика', 'Люблю', 'Кнопка', 'Письмо 1', 'Письмо 2', 'Письмо 3', 'Письмо 4', 'Тайное', 'Чат']
 MAX_SIDE, QUALITY = 1100, 78        # фото для одностраничной версии
 
 
@@ -31,10 +61,28 @@ def build():
     css = open(os.path.join(SRC, 'styles.css'), encoding='utf-8').read()
     js = open(os.path.join(SRC, 'script.js'), encoding='utf-8').read()
 
+    # для секретной галактики — подхватим importmap и module-скрипт если есть
+    importmap_html = ""
+    extra_modules = []
+    try:
+        secret_raw = open(os.path.join(SRC, 'secret.html'), encoding='utf-8').read()
+        m = re.search(r'<script type="importmap">.*?</script>', secret_raw, re.S)
+        if m:
+            importmap_html = m.group(0)
+        for mm in re.finditer(r'<script type="module">.*?</script>', secret_raw, re.S):
+            extra_modules.append(mm.group(0))
+    except Exception:
+        pass
+
     cache, sections = {}, []
     for i, page in enumerate(PAGES, 1):
         html = open(os.path.join(SRC, page), encoding='utf-8').read()
-        body = re.search(r'<main class="card">(.*?)</main>', html, re.S).group(1)
+        # берём содержимое <main class="card">
+        m = re.search(r'<main class="card[^"]*">(.*?)</main>', html, re.S)
+        if not m:
+            print(f"WARN: не нашёл <main> в {page}")
+            continue
+        body = m.group(1)
 
         # внутренние ссылки → якоря разделов
         for target, anchor in MAP.items():
@@ -51,7 +99,7 @@ def build():
                 m.group(0).replace(m.group('src'), cache[big])
 
         body = re.sub(
-            r'<img\s+src="(?P<src>img/[^"]+)"(?:\s+data-full="(?P<full>img/[^"]+)")?',
+            r'<img\s+src="(?P<src>img/[^\"]+)"(?:\s+data-full="(?P<full>img/[^\"]+)\")?',
             swap, body)
 
         aria = ' aria-current="page"' if i == 1 else ''
@@ -60,16 +108,20 @@ def build():
             '            <div class="card">%s</div>\n'
             '        </section>' % (' is-active' if i == 1 else '', i, STEP_LABELS[i - 1], body))
 
-    steps = '\n'.join(
-        '        <a class="step%s" href="#p%d"%s><b>%d</b><span>%s</span></a>' % (
-            ' is-active' if i == 1 else '', i, ' aria-current="page"' if i == 1 else '', i, label)
-        for i, label in enumerate(STEP_LABELS, 1))
+    # side-nav with emoji for one-file (instead of old top steps)
+    EMOJIS = ['🏠','💌','📊','❤️','💖','✉️','✉️','✉️','✉️','✨','💬']
+    side_items = []
+    for i, label in enumerate(STEP_LABELS, 1):
+        emoji = EMOJIS[i-1] if i-1 < len(EMOJIS) else '•'
+        cls = 'side-btn' + (' is-active' if i == 1 else '')
+        side_items.append(f'        <a class="{cls}" href="#p{i}" data-tip="{label}"><span>{emoji}</span></a>')
+    steps = "\n".join(side_items)
 
     spa = """
     /* ---------- одностраничный режим: переключение разделов ---------- */
     (function () {
         var sections = [].slice.call(document.querySelectorAll('.page'));
-        var steps = [].slice.call(document.querySelectorAll('.steps .step'));
+        var steps = [].slice.call(document.querySelectorAll('.side-nav .side-btn'));
         if (!sections.length) return;
 
         function indexOf(id) {
@@ -127,6 +179,8 @@ def build():
 <meta name="theme-color" content="#07050d">
 <title>Для тебя ❤️</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+@@IMPORTMAP@@
 <style>
 @@CSS@@
 
@@ -141,9 +195,10 @@ def build():
 
 <div class="bg" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 
-<nav class="steps" aria-label="Разделы">
+<nav class="side-nav" aria-label="Разделы">
 @@STEPS@@
 </nav>
+<div class="online-pill" id="onlinePill"><span class="online-dot"></span><span id="onlineCount">— онлайн</span></div>
 
 <div class="deck">
 @@SECTIONS@@
@@ -153,15 +208,18 @@ def build():
 @@JS@@
 @@SPA@@
 </script>
+@@EXTRA@@
 </body>
 </html>
 """
 
     doc = (doc.replace('@@CSS@@', css)
+              .replace('@@IMPORTMAP@@', importmap_html)
               .replace('@@STEPS@@', steps)
               .replace('@@SECTIONS@@', '\n'.join(sections))
               .replace('@@JS@@', js)
-              .replace('@@SPA@@', spa))
+              .replace('@@SPA@@', spa)
+              .replace('@@EXTRA@@', "\n".join(extra_modules)))
 
     open(OUT, 'w', encoding='utf-8').write(doc)
     size = os.path.getsize(OUT)
